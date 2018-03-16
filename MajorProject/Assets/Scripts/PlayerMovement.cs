@@ -84,4 +84,9 @@ public class PlayerMovement : MonoBehaviour
 
         rb.transform.position = currentPosition;
     }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        isMoving = false;
+    }
 }
