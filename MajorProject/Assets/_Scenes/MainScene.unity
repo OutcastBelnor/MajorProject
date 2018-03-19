@@ -113,6 +113,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: 0d0f73b4d74d6944f851bae5d9cbe17c, type: 2}
+--- !u!1 &143279268 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1422299700868020, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+    type: 2}
+  m_PrefabInternal: {fileID: 1441671962}
 --- !u!1 &286310946
 GameObject:
   m_ObjectHideFlags: 0
@@ -567,30 +572,15 @@ Prefab:
       propertyPath: slider
       value: 
       objectReference: {fileID: 1125958685}
-    - target: {fileID: 195273983152774136, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+    - target: {fileID: 212272265230893320, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
         type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 54967311915608700, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
-        type: 2}
-      propertyPath: m_Constraints
+      propertyPath: m_DrawMode
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 195273983152774136, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+    - target: {fileID: 212272265230893320, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
         type: 2}
-      propertyPath: m_AngularSpeed
+      propertyPath: m_FlipX
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 195273983152774136, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
-        type: 2}
-      propertyPath: m_Acceleration
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 195273983152774136, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
-        type: 2}
-      propertyPath: m_Speed
-      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 48cc8abe79fcc404ea4aadf7cf5acb38, type: 2}
@@ -740,7 +730,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4942172101167010, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 13
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4942172101167010, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
       propertyPath: m_LocalPosition.y
@@ -770,19 +760,15 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 54096731830137524, guid: 86a47dba12aca6a43938f9f1ac730214,
+    - target: {fileID: 114368184549841104, guid: 86a47dba12aca6a43938f9f1ac730214,
         type: 2}
-      propertyPath: m_CollisionDetection
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 143279268}
+    - target: {fileID: 195852287721306274, guid: 86a47dba12aca6a43938f9f1ac730214,
+        type: 2}
+      propertyPath: m_Enabled
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 54096731830137524, guid: 86a47dba12aca6a43938f9f1ac730214,
-        type: 2}
-      propertyPath: m_Constraints
-      value: 116
-      objectReference: {fileID: 0}
-    - target: {fileID: 1115997384394510, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
-      propertyPath: m_Name
-      value: Collider
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}

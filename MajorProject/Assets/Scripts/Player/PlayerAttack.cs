@@ -20,6 +20,7 @@ public class PlayerAttack : MonoBehaviour
             Debug.Log("Attacking!");
             if (isInRange)
             {
+                Debug.Log(enemiesInRange[0].name);
                 float damage = Mathf.Round(Random.Range(10, 25));
 
                 foreach(GameObject enemy in enemiesInRange)
