@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent), typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
     public float speed; // a variable that will control the speed of the character
@@ -9,23 +11,22 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
 
     private bool isMoving; // a variable that will track if the character is moving
-    private Vector3 destination; // the destination of the character provided by the 
+    private Vector3 destination; // the destination of the character provided by the
+    private NavMeshAgent navMeshAgent;
 
 	private void Start ()
     {
         rb = GetComponent<Rigidbody>();
-        isMoving = false;
+
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.updateUpAxis = false;
+        navMeshAgent.SetDestination(rb.position);
 	}
 	
 	private void Update ()
     {
         KeyboardMovement();
         MouseMovement();
-
-        if (isMoving)
-        {
-            Movement();
-        }
 
         LimitPosition();
     }
@@ -38,7 +39,12 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movement = rb.transform.position + new Vector3(horizontal, 0.0f, vertical); // calculate player's movement
         if (!movement.Equals(rb.transform.position))
         {
-            isMoving = false;
+            if (navMeshAgent.enabled)
+            {
+                navMeshAgent.SetDestination(rb.position);
+                navMeshAgent.enabled = false;
+            }
+
             rb.position = movement * speed; // assign the new position with the speed
         }
         
@@ -48,29 +54,17 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            isMoving = true;
-
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit))
             {
                 Vector3 moveTo = hit.point;
+                moveTo.y = 1.0f;
 
-                destination = moveTo;
+                navMeshAgent.enabled = true;
+                navMeshAgent.SetDestination(moveTo);
             }
-        }
-    }
-
-    private void Movement()
-    {
-        if (rb.transform.position.Equals(destination))
-        {
-            isMoving = false;
-        }
-        else
-        {
-            rb.transform.position = Vector3.MoveTowards(rb.transform.position, destination, speed/2);
         }
     }
 
@@ -83,10 +77,5 @@ public class PlayerMovement : MonoBehaviour
         currentPosition.y = 1.0f; // ensure that the character is at the appropriate height
 
         rb.transform.position = currentPosition;
-    }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        isMoving = false;
     }
 }
