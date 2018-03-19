@@ -9,7 +9,7 @@ public class EnemyBehaviour : MonoBehaviour
     public GameObject player;
 
     private NavMeshAgent enemyNavMeshAgent;
-    private float viewDistance = 5.0f;
+    private float viewDistance = 20.0f;
     
     private enum State { Idle = 0, Chase = 1, Attack = 2, Flee = 3};
     private State currentState;
@@ -40,14 +40,17 @@ public class EnemyBehaviour : MonoBehaviour
         else if (currentState.Equals(State.Chase))
         {
             Debug.Log("Enemy is chasing the player");
+            ChaseState();
         }
         else if (currentState.Equals(State.Attack))
         {
             Debug.Log("Enemy is attacking the player");
+            AttackState();
         }
         else if (currentState.Equals(State.Flee))
         {
             Debug.Log("Enemy is fleeing from the player");
+            FleeState();
         }
     }
 
@@ -62,15 +65,25 @@ public class EnemyBehaviour : MonoBehaviour
         float distanceToPlayer = Vector3.Distance(enemyNavMeshAgent.transform.position, player.transform.position);
         if (distanceToPlayer < viewDistance)
         {
-            //currentState = State.Chase;
+            currentState = State.Chase;
         }
     }
 
     private void ChaseState()
     {
         enemyNavMeshAgent.destination = player.GetComponent<Rigidbody>().position;
+        enemyNavMeshAgent.speed = 10.0f;
 
-        //if ()
+        float distanceToPlayer = Vector3.Distance(enemyNavMeshAgent.transform.position, player.transform.position);
+        if (distanceToPlayer <= 2.5f)
+        {
+            currentState = State.Attack;
+        }
+        else if (distanceToPlayer >= viewDistance)
+        {
+            currentState = State.Idle;
+        }
+
     }
 
     private void AttackState()
@@ -80,6 +93,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void FleeState()
     {
+        enemyNavMeshAgent.speed = 10.0f;
         // nothing yet
     }
 
@@ -88,7 +102,7 @@ public class EnemyBehaviour : MonoBehaviour
         Vector3 randomPosition = Random.insideUnitSphere * 20.0f + enemyNavMeshAgent.transform.position;
         randomPosition.y = 1.0f;
 
-        Debug.Log(randomPosition);
+        //Debug.Log(randomPosition);
         return randomPosition;
     }
 }
