@@ -11,6 +11,11 @@ public class EnemyHealth : MonoBehaviour
         enemyHealthPoints = 50;
     }
 
+    public float GetHealthPoints()
+    {
+        return enemyHealthPoints;
+    }
+
     public void ChangeHealthPoints(float modifier)
     {
         enemyHealthPoints += modifier;

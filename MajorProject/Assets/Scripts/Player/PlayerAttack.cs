@@ -5,28 +5,26 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     private bool isInRange;
-    private List<GameObject> enemiesInRange;
+    private List<EnemyHealth> enemiesInRange;
+
+    private float baseDamage = 10.0f;
 
     private void Start()
     {
         isInRange = false;
-        enemiesInRange = new List<GameObject>();
+        enemiesInRange = new List<EnemyHealth>();
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(1))
         {
-            Debug.Log("Attacking!");
             if (isInRange)
             {
                 Debug.Log(enemiesInRange[0].name);
-                float damage = Mathf.Round(Random.Range(10, 25));
+                float damage = baseDamage + Mathf.Round(Random.Range(3.0f, 7.0f));
 
-                foreach(GameObject enemy in enemiesInRange)
-                {
-                    enemy.GetComponent<EnemyHealth>().ChangeHealthPoints(-damage);
-                }
+                enemiesInRange[0].ChangeHealthPoints(-damage);
             }
         }
     }
@@ -35,17 +33,16 @@ public class PlayerAttack : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            Debug.Log("Triggered by enemy!");
             isInRange = true;
-            enemiesInRange.Add(other.gameObject);
+            enemiesInRange.Add(other.gameObject.GetComponent<EnemyHealth>());
         }        
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (enemiesInRange.Contains(other.gameObject))
+        if (enemiesInRange.Contains(other.gameObject.GetComponent<EnemyHealth>()))
         {
-            enemiesInRange.Remove(other.gameObject);
+            enemiesInRange.Remove(other.gameObject.GetComponent<EnemyHealth>());
         }
 
         if (enemiesInRange.Count == 0)

@@ -6,7 +6,7 @@ using UnityEngine.AI;
 [RequireComponent (typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
 {
-    public Transform playerPosition;
+    public Vector3 playerPosition;
     public PlayerHealth playerHealth;
 
     private NavMeshAgent enemyNavMeshAgent;
@@ -21,13 +21,12 @@ public class EnemyBehaviour : MonoBehaviour
     private float timeBetweenAttacks;
     private float baseDamage = 5.0f;
 
-    //private EnemyHealth enemyHealth;
+    private EnemyHealth enemyHealth;
 
     private void Start()
     {
         enemyNavMeshAgent = GetComponent<NavMeshAgent>();
         enemyNavMeshAgent.updateUpAxis = false;
-        //enemyNavMeshAgent.enabled = false;
 
         currentState = State.Idle;
         Debug.Log("The current state is: " + currentState);
@@ -36,6 +35,8 @@ public class EnemyBehaviour : MonoBehaviour
         enemyNavMeshAgent.SetDestination(RandomPosition());
 
         timeBetweenAttacks = 1.5f;
+
+        enemyHealth = GetComponent<EnemyHealth>();
     }
 
     private void Update()
@@ -62,13 +63,15 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void IdleState()
     {
+        enemyNavMeshAgent.speed = 2.0f;
+
         if (Time.time - wanderingTime >= 5.0f)
         {
             wanderingTime = Time.time;
             enemyNavMeshAgent.SetDestination(RandomPosition());
         }        
 
-        float distanceToPlayer = Vector3.Distance(enemyNavMeshAgent.transform.position, playerPosition.position);
+        float distanceToPlayer = Vector3.Distance(enemyNavMeshAgent.transform.position, playerPosition);
         if (distanceToPlayer < viewDistance)
         {
             currentState = State.Chase;
@@ -78,7 +81,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void ChaseState()
     {
-        enemyNavMeshAgent.destination = playerPosition.position;
+        enemyNavMeshAgent.destination = playerPosition;
         enemyNavMeshAgent.speed = 10.0f;
         
         if (CalculateDistance() <= 2.5f)
@@ -97,10 +100,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void AttackState()
     {
-        Debug.Log("in attack");
         if (Time.time - timeBetweenAttacks >= attackSpeed)
         {
-            Debug.Log("attacking");
             float damage = baseDamage + Mathf.Round(Random.Range(1.0f, 5.0f));
             playerHealth.ChangeHealthPoints(-damage);
 
@@ -118,12 +119,25 @@ public class EnemyBehaviour : MonoBehaviour
             currentState = State.Idle;
             Debug.Log("The current state is: " + currentState);
         }
+        else if (enemyHealth.GetHealthPoints() < 50.0f)
+        {
+            currentState = State.Flee;
+            Debug.Log("The current state is: " + currentState);
+        }
     }
 
     private void FleeState()
     {
         enemyNavMeshAgent.speed = 10.0f;
-        // nothing yet
+
+        enemyNavMeshAgent.SetDestination(-playerPosition);
+
+        if (CalculateDistance() >= viewDistance)
+        {
+            wanderingTime = 5.0f;
+            currentState = State.Idle;
+            Debug.Log("The current state is: " + currentState);
+        }
     }
 
     private Vector3 RandomPosition()
@@ -136,6 +150,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     private float CalculateDistance()
     {
-        return Vector3.Distance(enemyNavMeshAgent.transform.position, playerPosition.position);
+        return Vector3.Distance(enemyNavMeshAgent.transform.position, playerPosition);
     }
 }
