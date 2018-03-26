@@ -118,6 +118,17 @@ GameObject:
   m_PrefabParentObject: {fileID: 1422299700868020, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
     type: 2}
   m_PrefabInternal: {fileID: 1441671962}
+--- !u!114 &143279271 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114824049256343646, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+    type: 2}
+  m_PrefabInternal: {fileID: 1441671962}
+  m_Script: {fileID: 11500000, guid: 794e755d5c259c346986704ff057e44d, type: 3}
+--- !u!4 &143279275 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4706251884902804, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+    type: 2}
+  m_PrefabInternal: {fileID: 1441671962}
 --- !u!1 &286310946
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,6 +593,11 @@ Prefab:
       propertyPath: m_FlipX
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 195273983152774136, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+        type: 2}
+      propertyPath: m_StoppingDistance
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 48cc8abe79fcc404ea4aadf7cf5acb38, type: 2}
   m_IsPrefabParent: 0
@@ -775,6 +791,32 @@ Prefab:
       propertyPath: m_Speed
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 114700455060301254, guid: 86a47dba12aca6a43938f9f1ac730214,
+        type: 2}
+      propertyPath: playerPosition
+      value: 
+      objectReference: {fileID: 143279275}
+    - target: {fileID: 114700455060301254, guid: 86a47dba12aca6a43938f9f1ac730214,
+        type: 2}
+      propertyPath: playerHealth
+      value: 
+      objectReference: {fileID: 143279271}
+    - target: {fileID: 195852287721306274, guid: 86a47dba12aca6a43938f9f1ac730214,
+        type: 2}
+      propertyPath: m_Height
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 195852287721306274, guid: 86a47dba12aca6a43938f9f1ac730214,
+        type: 2}
+      propertyPath: m_Radius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 195852287721306274, guid: 86a47dba12aca6a43938f9f1ac730214,
+        type: 2}
+      propertyPath: m_StoppingDistance
+      value: 2.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114368184549841104, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
   m_IsPrefabParent: 0

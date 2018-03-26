@@ -23,7 +23,13 @@ public class PlayerHealth : MonoBehaviour
 
     public void ChangeHealthPoints(float modifier)
     {
+        Debug.Log("Damaged: " + modifier + " points.");
         healthPoints += modifier;
         slider.value = healthPoints;
+
+        if (healthPoints <= 0)
+        {
+            this.gameObject.SetActive(false);
+        }
     }
 }
