@@ -322,9 +322,9 @@ GameObject:
   m_Component:
   - component: {fileID: 771405957}
   - component: {fileID: 771405958}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Collider
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -433,7 +433,7 @@ GameObject:
   - component: {fileID: 1051966507}
   - component: {fileID: 1051966505}
   - component: {fileID: 1051966506}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -794,6 +794,24 @@ Prefab:
         type: 2}
       propertyPath: m_StoppingDistance
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1422299700868020, guid: 48cc8abe79fcc404ea4aadf7cf5acb38, type: 2}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1228031091341838, guid: 48cc8abe79fcc404ea4aadf7cf5acb38, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 114264068750270916, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+        type: 2}
+      propertyPath: mask.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 114335385938767062, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+        type: 2}
+      propertyPath: mask.m_Bits
+      value: 256
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 48cc8abe79fcc404ea4aadf7cf5acb38, type: 2}

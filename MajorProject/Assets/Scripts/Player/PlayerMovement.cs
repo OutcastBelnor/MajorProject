@@ -10,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
 
+    public LayerMask mask; // A Layer to ignore when raycasting
+
     private bool isMoving; // a variable that will track if the character is moving
     private Vector3 destination; // the destination of the character provided by the
     private NavMeshAgent navMeshAgent;
@@ -18,9 +20,9 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
 
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        navMeshAgent.updateUpAxis = false;
-        navMeshAgent.SetDestination(rb.position);
+        navMeshAgent = GetComponent<NavMeshAgent>(); // Sets up NavMeshAgent
+        navMeshAgent.updateUpAxis = false; // Prevents NavMeshAgent from rotating the camera
+        navMeshAgent.SetDestination(rb.position); // First destination, which is the current position
 	}
 	
 	private void Update ()
@@ -31,15 +33,16 @@ public class PlayerMovement : MonoBehaviour
         LimitPosition();
     }
 
+    /// <summary> Movement done with arrows or WSAD keys </summary>
     private void KeyboardMovement()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        float vertical = Input.GetAxisRaw("Vertical"); // Get the input from the keyboard
 
         Vector3 movement = rb.transform.position + new Vector3(horizontal, 0.0f, vertical); // calculate player's movement
-        if (!movement.Equals(rb.transform.position))
+        if (!movement.Equals(rb.transform.position)) // Checks if the current position is not the destination
         {
-            if (navMeshAgent.enabled)
+            if (navMeshAgent.enabled) // Checks if the NavMeshAgent is active
             {
                 navMeshAgent.SetDestination(rb.position);
                 navMeshAgent.enabled = false;
@@ -50,24 +53,26 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
+    /// <summary> Movement done with mouse </summary>
     private void MouseMovement()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1)) // Checks if the right mouse button is clicked
         {
             RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Creates a ray that is cast from the camera at the mouse cursor
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, mask)) // Checks if the ray hit anything
             {
-                Vector3 moveTo = hit.point;
-                moveTo.y = 1.0f;
+                Vector3 moveTo = hit.point; // Gets the intersection point
+                moveTo.y = 1.0f; // Adjusts the height
 
                 navMeshAgent.enabled = true;
-                navMeshAgent.SetDestination(moveTo);
+                navMeshAgent.SetDestination(moveTo); // Sets the destination
             }
         }
     }
 
+    /// <summary> Limits the position to the boundaries of the level and adjusts the height </summary>
     private void LimitPosition()
     {
         Vector3 currentPosition = rb.transform.position;

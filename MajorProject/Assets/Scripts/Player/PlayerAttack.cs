@@ -7,6 +7,8 @@ public class PlayerAttack : MonoBehaviour
     private bool isInRange;
     private List<EnemyHealth> enemiesInRange;
 
+    public LayerMask mask; // A Layer to ignore when raycasting
+
     private float baseDamage = 10.0f;
 
     private void Start()
@@ -17,16 +19,51 @@ public class PlayerAttack : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(0))
         {
             if (isInRange)
             {
-                Debug.Log(enemiesInRange[0].name);
+                /*Debug.Log(enemiesInRange[0].name);
                 float damage = baseDamage + Mathf.Round(Random.Range(3.0f, 7.0f));
 
-                enemiesInRange[0].ChangeHealthPoints(-damage);
+                enemiesInRange[0].ChangeHealthPoints(-damage);*/
+
+                GameObject enemy = EnemyClicked();
+
+                if (enemy == null)
+                {
+                    return;
+                }
+                
+                if (enemy.CompareTag("Enemy"))
+                {
+                    EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+
+                    if (enemiesInRange.Contains(enemyHealth))
+                    {
+                        Debug.Log("Enemy is in range");
+                        float damage = baseDamage + Mathf.Round(Random.Range(3.0f, 7.0f));
+
+                        enemyHealth.ChangeHealthPoints(-damage);
+                    }
+                }
             }
         }
+    }
+
+    /// <summary> Gets the GameObject clicked by the Player </summary>
+    private GameObject EnemyClicked()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Gets the input from the mouse
+
+        if (Physics.Raycast(ray, out hit, mask)) // Checks if the ray hit anything
+        {
+            GameObject objectHit = hit.transform.gameObject;
+            return objectHit;
+        }
+
+        return null;
     }
 
     private void OnTriggerEnter(Collider other)
