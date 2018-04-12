@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Start ()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>(); 
 
         navMeshAgent = GetComponent<NavMeshAgent>(); // Sets up NavMeshAgent
         navMeshAgent.updateUpAxis = false; // Prevents NavMeshAgent from rotating the camera
@@ -39,6 +39,16 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical"); // Get the input from the keyboard
 
+        SpriteRenderer sprite = gameObject.GetComponentInChildren<SpriteRenderer>();
+        if (horizontal < 0)
+        {
+            sprite.flipX = true;
+        }
+        else if (horizontal > 0)
+        {
+            sprite.flipX = false;   
+        }
+
         Vector3 movement = rb.transform.position + new Vector3(horizontal, 0.0f, vertical); // calculate player's movement
         if (!movement.Equals(rb.transform.position)) // Checks if the current position is not the destination
         {
@@ -58,6 +68,19 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1)) // Checks if the right mouse button is clicked
         {
+            float screenCenter = Screen.width / 2;
+            float mousePosX = Input.mousePosition.x;
+
+            SpriteRenderer sprite = gameObject.GetComponentInChildren<SpriteRenderer>();
+            if (mousePosX < screenCenter)
+            {
+                sprite.flipX = true;
+            }
+            else if (mousePosX > screenCenter)
+            {
+                sprite.flipX = false;
+            }
+
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Creates a ray that is cast from the camera at the mouse cursor
 

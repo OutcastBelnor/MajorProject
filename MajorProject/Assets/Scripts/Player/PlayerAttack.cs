@@ -32,17 +32,17 @@ public class PlayerAttack : MonoBehaviour
 
                 if (enemy == null)
                 {
-                    return;
+                    return; // Returns if the enemy is null
                 }
                 
                 if (enemy.CompareTag("Enemy"))
                 {
                     EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
 
-                    if (enemiesInRange.Contains(enemyHealth))
+                    if (enemiesInRange.Contains(enemyHealth)) // Checks if the selected Enemy is in range
                     {
                         Debug.Log("Enemy is in range");
-                        float damage = baseDamage + Mathf.Round(Random.Range(3.0f, 7.0f));
+                        float damage = baseDamage + Mathf.Round(Random.Range(3.0f, 7.0f)); // Calculate the damage
 
                         enemyHealth.ChangeHealthPoints(-damage);
                     }
