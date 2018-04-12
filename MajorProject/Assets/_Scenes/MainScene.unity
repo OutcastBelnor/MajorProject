@@ -465,7 +465,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 0
-  m_StoppingDistance: 2.5
+  m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -485,7 +485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPosition: {x: 0, y: 0, z: 0}
+  playerPosition: {fileID: 1426374822}
   playerHealth: {fileID: 143279271}
 --- !u!135 &1051966509
 SphereCollider:
@@ -729,8 +729,13 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1426374822 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4706251884902804, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+    type: 2}
+  m_PrefabInternal: {fileID: 1441671962}
 --- !u!1001 &1441671962
 Prefab:
   m_ObjectHideFlags: 0
@@ -768,7 +773,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4706251884902804, guid: 48cc8abe79fcc404ea4aadf7cf5acb38, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114824049256343646, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
         type: 2}
