@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 moveTo = hit.point; // Gets the intersection point
                 moveTo.y = 1.0f; // Adjusts the height
 
-                navMeshAgent.enabled = true;
+                navMeshAgent.enabled = true;                    
                 navMeshAgent.SetDestination(moveTo); // Sets the destination
             }
         }

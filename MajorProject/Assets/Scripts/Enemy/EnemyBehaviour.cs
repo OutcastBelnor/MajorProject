@@ -32,7 +32,7 @@ public class EnemyBehaviour : MonoBehaviour
         Debug.Log("The current state is: " + currentState);
 
         wanderingTime = Time.time;
-        enemyNavMeshAgent.SetDestination(RandomPosition()); // Sets up the enemy to "wander" to the first point
+        SetDestination(RandomPosition()); // Sets up the enemy to "wander" to the first point
 
         timeBetweenAttacks = 0.5f;
 
@@ -61,7 +61,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    // Base state in which enemy "wanders" around, looking for the player
+    /// <summary> Base state in which enemy "wanders" around, looking for the player </summary>
     private void IdleState()
     {
         enemyNavMeshAgent.speed = 2.0f; // Set up the NavMeshAgent
@@ -70,7 +70,7 @@ public class EnemyBehaviour : MonoBehaviour
         if (Time.time - wanderingTime >= 5.0f) // Checks if it's the time to take a new destination to walk to
         {
             wanderingTime = Time.time;
-            enemyNavMeshAgent.SetDestination(RandomPosition());
+            SetDestination(RandomPosition());
         }        
         
         if (CalculateDistance() < viewDistance) // Checks if it "sees" the player
@@ -88,10 +88,10 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    // Chasing after the Player, trying to get in range to attack him
+    /// <summary> Chasing after the Player, trying to get in range to attack him </summary>
     private void ChaseState()
     {
-        enemyNavMeshAgent.destination = playerPosition.position;
+        SetDestination(playerPosition.position);
         enemyNavMeshAgent.speed = 10.0f;
         enemyNavMeshAgent.stoppingDistance = 2.5f; // Sets up NavMeshAgent
         
@@ -108,7 +108,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    // Attacks the player at each interval, chases it if out of range or flees if it has low health
+    /// <summary> Attacks the player at each interval, chases it if out of range or flees if it has low health </summary>
     private void AttackState()
     {
         if (Time.time - timeBetweenAttacks >= attackSpeed) // Checks if it time to attack
@@ -137,7 +137,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    // Having low health Enemy decides to run away in opposite direction of the player
+    /// <summary> Having low health Enemy decides to run away in opposite direction of the player </summary>
     private void FleeState()
     {
         enemyNavMeshAgent.speed = 10.0f;
@@ -150,7 +150,7 @@ public class EnemyBehaviour : MonoBehaviour
             fleeDestination.x *= -1.0f;
             fleeDestination.z *= -1.0f; // Calculates a retreat destination in direction opposite of the player
 
-            enemyNavMeshAgent.SetDestination(fleeDestination);
+            SetDestination(fleeDestination);
         }
         
         if (CalculateDistance() >= viewDistance) // Checks if the player is in view
@@ -161,7 +161,23 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    // Calculates a random position inside a circle of radius 20 units which centers at the enemy
+    /// <summary> Sets the new destination and flips the sprite if necessary </summary>
+    private void SetDestination(Vector3 destination)
+    {
+        SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
+        if (transform.position.x - destination.x < 0) // Checks which way the Enemy is heading
+        {
+            sprite.flipX = false; // And flips the sprite if necessary
+        }
+        else if (transform.position.x - destination.x > 0)
+        {
+            sprite.flipX = true;
+        }
+
+        enemyNavMeshAgent.SetDestination(destination);
+    }
+
+    /// <summary> Calculates a random position inside a circle of radius 20 units which centers at the enemy </summary>
     private Vector3 RandomPosition()
     {
         Vector3 randomPosition = Random.insideUnitSphere * 20.0f + enemyNavMeshAgent.transform.position;
@@ -170,7 +186,7 @@ public class EnemyBehaviour : MonoBehaviour
         return randomPosition;
     }
 
-    // Calculates a distance from the player
+    /// <summary> Calculates a distance from the player </summary>
     private float CalculateDistance()
     {
         return Vector3.Distance(enemyNavMeshAgent.transform.position, playerPosition.position);

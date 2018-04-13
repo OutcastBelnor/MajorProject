@@ -813,6 +813,16 @@ Prefab:
       propertyPath: mask.m_Bits
       value: 256
       objectReference: {fileID: 0}
+    - target: {fileID: 195273983152774136, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+        type: 2}
+      propertyPath: m_Speed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 195273983152774136, guid: 48cc8abe79fcc404ea4aadf7cf5acb38,
+        type: 2}
+      propertyPath: m_Acceleration
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 48cc8abe79fcc404ea4aadf7cf5acb38, type: 2}
   m_IsPrefabParent: 0
