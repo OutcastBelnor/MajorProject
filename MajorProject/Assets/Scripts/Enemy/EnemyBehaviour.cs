@@ -10,7 +10,7 @@ public class EnemyBehaviour : MonoBehaviour
     public PlayerHealth playerHealth;
 
     private NavMeshAgent enemyNavMeshAgent;
-    private float viewDistance = 20.0f; // Distance in which the player can be "seen"
+    private float viewDistance = 10.0f; // Distance in which the player can be "seen"
     
     private enum State {Idle, Chase, Attack, Flee}; // States for the Finite State Machine
     private State currentState;
@@ -145,11 +145,24 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (enemyNavMeshAgent.remainingDistance <= 3.0f) // Checks if it is close to the destination
         {
-            Vector3 fleeDestination = playerPosition.position;
-            fleeDestination += new Vector3(10.0f, 0.0f, 10.0f);
-            fleeDestination.x *= -1.0f;
-            fleeDestination.z *= -1.0f; // Calculates a retreat destination in direction opposite of the player
-
+            Vector3 fleeDestination = transform.position;
+            if (playerPosition.position.x > transform.position.x) // Checks the direction the player is in relation to the enemy
+            {
+                fleeDestination.x -= (10.0f + fleeDestination.x - transform.position.x); // And modify the flee destination accordingly
+            }
+            if (playerPosition.position.x < transform.position.x)
+            {
+                fleeDestination.x += (10.0f + fleeDestination.x - transform.position.x);
+            }
+            if (playerPosition.position.y > transform.position.y)
+            {
+                fleeDestination.y -= (10.0f + fleeDestination.y - transform.position.y);
+            }
+            if (playerPosition.position.y < transform.position.y)
+            {
+                fleeDestination.y += (10.0f + fleeDestination.y - transform.position.y);
+            }
+            
             SetDestination(fleeDestination);
         }
         
