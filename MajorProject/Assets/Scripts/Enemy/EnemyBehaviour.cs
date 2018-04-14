@@ -6,8 +6,8 @@ using UnityEngine.AI;
 [RequireComponent (typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
 {
-    public Transform playerPosition;
-    public PlayerHealth playerHealth;
+    private Transform playerPosition;
+    private PlayerHealth playerHealth;
 
     private NavMeshAgent enemyNavMeshAgent;
     private float viewDistance = 10.0f; // Distance in which the player can be "seen"
@@ -23,8 +23,20 @@ public class EnemyBehaviour : MonoBehaviour
 
     private EnemyHealth enemyHealth;
 
+    // Flocking instance variables
+    public List<GameObject> otherEnemies;
+    public List<GameObject> neighbours; // Stores all nearby neighbours
+    private bool isInGroup; // Tracks if the Enemy is currently part of the group
+
     private void Start()
     {
+        /*GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (!player.Equals(null))
+        {
+            playerPosition = player.transform;
+            playerHealth = player.GetComponent<PlayerHealth>();
+        }*/
+
         enemyNavMeshAgent = GetComponent<NavMeshAgent>();
         enemyNavMeshAgent.updateUpAxis = false;
 
@@ -37,6 +49,10 @@ public class EnemyBehaviour : MonoBehaviour
         timeBetweenAttacks = 0.5f;
 
         enemyHealth = GetComponent<EnemyHealth>();
+
+        otherEnemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy")); // Temporary: will object pool in AI director later
+        neighbours = new List<GameObject>();
+        isInGroup = false;
     }
 
     private void Update()
@@ -61,7 +77,9 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    /// <summary> Base state in which enemy "wanders" around, looking for the player </summary>
+    /// <summary>
+    /// Base state in which enemy "wanders" around, looking for the player
+    /// </summary>
     private void IdleState()
     {
         enemyNavMeshAgent.speed = 2.0f; // Set up the NavMeshAgent
@@ -69,11 +87,13 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (Time.time - wanderingTime >= 5.0f) // Checks if it's the time to take a new destination to walk to
         {
+            GetNeighbours();
+
             wanderingTime = Time.time;
             SetDestination(RandomPosition());
         }        
         
-        if (CalculateDistance() < viewDistance) // Checks if it "sees" the player
+        /*if (CalculateDistance() < viewDistance) // Checks if it "sees" the player
         {
             if (enemyHealth.GetHealthPoints() <= 15.0f)
             {
@@ -85,10 +105,12 @@ public class EnemyBehaviour : MonoBehaviour
             }
             
             Debug.Log("The current state is: " + currentState);
-        }
+        }*/
     }
 
-    /// <summary> Chasing after the Player, trying to get in range to attack him </summary>
+    /// <summary>
+    /// Chasing after the Player, trying to get in range to attack him
+    /// </summary>
     private void ChaseState()
     {
         SetDestination(playerPosition.position);
@@ -108,7 +130,9 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    /// <summary> Attacks the player at each interval, chases it if out of range or flees if it has low health </summary>
+    /// <summary>
+    /// Attacks the player at each interval, chases it if out of range or flees if it has low health
+    /// </summary>
     private void AttackState()
     {
         if (Time.time - timeBetweenAttacks >= attackSpeed) // Checks if it time to attack
@@ -137,7 +161,9 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    /// <summary> Having low health Enemy decides to run away in opposite direction of the player </summary>
+    /// <summary>
+    /// Having low health Enemy decides to run away in opposite direction of the player
+    /// </summary>
     private void FleeState()
     {
         enemyNavMeshAgent.speed = 10.0f;
@@ -174,7 +200,10 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    /// <summary> Sets the new destination and flips the sprite if necessary </summary>
+    /// <summary>
+    /// Sets the new destination and flips the sprite if necessary
+    /// </summary>
+    /// <param name="destination"></param>
     private void SetDestination(Vector3 destination)
     {
         SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
@@ -190,18 +219,68 @@ public class EnemyBehaviour : MonoBehaviour
         enemyNavMeshAgent.SetDestination(destination);
     }
 
-    /// <summary> Calculates a random position inside a circle of radius 20 units which centers at the enemy </summary>
+    /// <summary>
+    /// Calculates a random position inside a circle of radius 20 units which centers at the enemy
+    /// </summary>
+    /// <returns></returns>
     private Vector3 RandomPosition()
     {
-        Vector3 randomPosition = Random.insideUnitSphere * 20.0f + enemyNavMeshAgent.transform.position;
+        Vector3 randomPosition;
+        if (isInGroup)
+        {
+            randomPosition = Random.insideUnitSphere * 10.0f + calculateGroupCenter();
+        }   
+        else
+        {
+            randomPosition = Random.insideUnitSphere * 10.0f + enemyNavMeshAgent.transform.position;
+        }
         randomPosition.y = 1.0f;
         
         return randomPosition;
     }
 
-    /// <summary> Calculates a distance from the player </summary>
+    /// <summary>
+    /// Calculates a distance from the player.
+    /// </summary>
+    /// <returns></returns>
     private float CalculateDistance()
     {
         return Vector3.Distance(enemyNavMeshAgent.transform.position, playerPosition.position);
+    }
+
+    /// <summary>
+    /// Returns a center of the current group.
+    /// </summary>
+    /// <returns></returns>
+    private Vector3 calculateGroupCenter()
+    {
+        Vector3 center = Vector3.zero;
+
+        foreach(GameObject neighbour in neighbours)
+        {
+            center += neighbour.transform.position;
+        }
+
+        center /= neighbours.Count;
+
+        return center;
+    }
+
+    /// <summary>
+    /// Checks if any other Enemy objects are in view distance.
+    /// If yes, then adds it to the neighbours.
+    /// </summary>
+    private void GetNeighbours()
+    {
+        foreach(GameObject neighbour in otherEnemies)
+        {
+            float distance = Vector3.Distance(transform.position, neighbour.transform.position);
+
+            if (distance <= viewDistance)
+            {
+                isInGroup = true;
+                neighbours.Add(neighbour);
+            }
+        }
     }
 }
