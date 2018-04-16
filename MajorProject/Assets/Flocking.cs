@@ -29,22 +29,43 @@ public class Flocking : MonoBehaviour
 	
 	void Update ()
     {
-        CalculateFlocking();
+        rigidbody.AddForce(CalculateFlocking());
 	}
 
-    private void CalculateFlocking()
+    private Vector3 CalculateFlocking()
     {
-        CalculateFollowing();
-        CalculateSeparation();
-        CalculateAlignment();
-        CalculateCohesion();
+        Vector3 flockingVelocity = Vector3.zero;
+
+        flockingVelocity += CalculateFollowing() * 0.25f;
+        flockingVelocity += CalculateSeparation() * 0.25f;
+        flockingVelocity += CalculateAlignment() * 0.25f;
+        flockingVelocity += CalculateCohesion() * 0.25f;
+
+        return flockingVelocity;
     }
 
-    private void CalculateFollowing()
+    /// <summary>
+    /// This method calculates the desired velocity towards the leader.
+    /// It uses arrive steering behaviour.
+    /// Returns Vector3.zero if it is too close.
+    /// </summary>
+    /// <returns>Vector3</returns>
+    private Vector3 CalculateFollowing()
     {
-        Vector3 following = leader.transform.position - transform.position; 
+        Vector3 following = leader.transform.position - transform.position;
 
-        
+        float distanceToLeader = Vector3.Distance(leader.transform.position, transform.position);
+
+        if (distanceToLeader > 0)
+        {
+            float speed = distanceToLeader / 0.3f;
+
+            following *= speed / distanceToLeader;
+
+            return following;
+        }
+
+        return Vector3.zero;
     }
 
     /// <summary>
