@@ -127,8 +127,8 @@ GameObject:
   - component: {fileID: 119570019}
   - component: {fileID: 119570018}
   - component: {fileID: 119570017}
-  - component: {fileID: 119570016}
   - component: {fileID: 119570015}
+  - component: {fileID: 119570016}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -139,17 +139,17 @@ GameObject:
 --- !u!114 &119570015
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114150921002788148, guid: cca61ae0b56a22e4486d934cbadb275c,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 119570014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
+  m_Script: {fileID: 11500000, guid: ab21af796661b674eae7b972d95c53bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherEnemies: []
+  otherMembers: []
   neighbours: []
+  timeBetweenAreaChecks: 1
 --- !u!195 &119570016
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -184,8 +184,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!114 &119570018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,7 +278,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 119570014}
   m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 6.911168, y: 8.27445, z: -39.96653}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 769773282}
@@ -432,7 +430,6 @@ GameObject:
   - component: {fileID: 1010770793}
   - component: {fileID: 1010770792}
   - component: {fileID: 1010770791}
-  - component: {fileID: 1010770790}
   m_Layer: 0
   m_Name: Enemy (2)
   m_TagString: Enemy
@@ -440,20 +437,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1010770790
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114183940265499154, guid: cca61ae0b56a22e4486d934cbadb275c,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1010770789}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!195 &1010770791
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -488,8 +471,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!114 &1010770793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -584,7 +565,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1010770789}
   m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 6.911168, y: 8.27445, z: -42.86653}
+  m_LocalPosition: {x: 2.62, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 272059281}
@@ -606,7 +587,6 @@ GameObject:
   - component: {fileID: 1032011984}
   - component: {fileID: 1032011983}
   - component: {fileID: 1032011982}
-  - component: {fileID: 1032011981}
   m_Layer: 0
   m_Name: Enemy (5)
   m_TagString: Enemy
@@ -614,20 +594,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1032011981
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114028887078821386, guid: cca61ae0b56a22e4486d934cbadb275c,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1032011980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!195 &1032011982
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -662,8 +628,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!114 &1032011984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -758,7 +722,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1032011980}
   m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 10.161168, y: 8.27445, z: -39.96653}
+  m_LocalPosition: {x: 0, y: 1, z: -2.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1798282783}
@@ -954,7 +918,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1528359487}
   m_LocalRotation: {x: -0.46174872, y: 0.00000012969612, z: -0.00000024914388, w: -0.8870109}
-  m_LocalPosition: {x: 13.44, y: 23.08, z: -14.29}
+  m_LocalPosition: {x: 0, y: 23.08, z: -15.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -975,7 +939,6 @@ GameObject:
   - component: {fileID: 1643489848}
   - component: {fileID: 1643489847}
   - component: {fileID: 1643489846}
-  - component: {fileID: 1643489845}
   m_Layer: 0
   m_Name: Enemy (4)
   m_TagString: Enemy
@@ -983,20 +946,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1643489845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114311419723702448, guid: cca61ae0b56a22e4486d934cbadb275c,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1643489844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!195 &1643489846
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1031,8 +980,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!114 &1643489848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1127,7 +1074,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1643489844}
   m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 4.3511677, y: 8.27445, z: -39.96653}
+  m_LocalPosition: {x: 0, y: 1, z: 2.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1077773114}
@@ -1149,7 +1096,6 @@ GameObject:
   - component: {fileID: 1738489558}
   - component: {fileID: 1738489557}
   - component: {fileID: 1738489556}
-  - component: {fileID: 1738489555}
   m_Layer: 0
   m_Name: Enemy (3)
   m_TagString: Enemy
@@ -1157,20 +1103,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1738489555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114420391121847590, guid: cca61ae0b56a22e4486d934cbadb275c,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1738489554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!195 &1738489556
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1205,8 +1137,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!114 &1738489558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1301,7 +1231,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1738489554}
   m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 6.911168, y: 8.27445, z: -37.44653}
+  m_LocalPosition: {x: -2.87, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1884787538}
@@ -1425,6 +1355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8898fa7990e71fe49b50c5bcc74cdbbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leader: {fileID: 0}
 --- !u!4 &2007612807
 Transform:
   m_ObjectHideFlags: 0
@@ -1433,7 +1364,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2007612805}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.088832, y: -7.2744503, z: 39.96653}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 119570022}

@@ -29,6 +29,15 @@ public class GroupManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Gets the members of the group.
+    /// </summary>
+    /// <returns>members</returns>
+    public List<GameObject> GetMembers()
+    {
+        return members;
+    }
+
+    /// <summary>
     /// Adds all the members of the group to the list members.
     /// </summary>
     private void AcquireMembers()
@@ -45,9 +54,18 @@ public class GroupManager : MonoBehaviour
     /// </summary>
     private void AppointLeader()
     {
-        int randomIndex = UnityEngine.Random.Range(0, members.Count);
-
+        int randomIndex = UnityEngine.Random.Range(0, members.Count); // Randomly assign the leader role to a member
         leader = members[randomIndex];
+        members.Remove(leader);
+
+        leader.GetComponent<Flocking>().enabled = false; // Leader needs to be steered by the EnemyBehaviour script
+        leader.GetComponent<EnemyBehaviour>().enabled = true; // So the Flocking script is not needed
+
+        foreach (GameObject member in members)
+        {
+            gameObject.GetComponent<EnemyBehaviour>().enabled = false; // Member needs to be steered by the Flocking script
+            leader.GetComponent<Flocking>().enabled = true; // So the EnemyBehaviour is not needed
+        }
     }
     
     void Update ()

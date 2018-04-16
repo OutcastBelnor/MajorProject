@@ -41,7 +41,6 @@ GameObject:
   - component: {fileID: 114700455060301254}
   - component: {fileID: 114038457873695790}
   - component: {fileID: 195852287721306274}
-  - component: {fileID: 114368184549841104}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -69,7 +68,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1859686968975922}
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 13, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4413320964902514}
@@ -114,19 +113,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d14d25229fcc404eaa94075a115c2dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114368184549841104
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1859686968975922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!114 &114700455060301254
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -138,8 +124,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherEnemies: []
-  neighbours: []
 --- !u!135 &135771014644113990
 SphereCollider:
   m_ObjectHideFlags: 1
