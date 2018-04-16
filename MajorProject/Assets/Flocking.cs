@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,9 +10,10 @@ public class Flocking : MonoBehaviour
 
     public List<GameObject> otherMembers;
     public List<GameObject> neighbours; // Stores all nearby neighbours
-    private float viewDistance;
-
+    private float viewDistance = 10.0f;
     public float timeBetweenAreaChecks = 1.0f;
+
+    public float maxDistanceFromNeighbours = 5.0f;
 
     private void Start ()
     {
@@ -24,8 +26,63 @@ public class Flocking : MonoBehaviour
 	
 	void Update ()
     {
-		
+        CalculateFlocking();
 	}
+
+    private void CalculateFlocking()
+    {
+        CalculateFollowing();
+        CalculateSeparation();
+        CalculateAlignment();
+        CalculateCohesion();
+    }
+
+    private void CalculateFollowing()
+    {
+        
+    }
+
+    /// <summary>
+    /// This method calculates a direction from each neighbour and adds it to a separationForce.
+    /// </summary>
+    /// <returns>Vector3</returns>
+    private Vector3 CalculateSeparation()
+    {
+        Vector3 separation = Vector3.zero;
+
+        foreach(GameObject neighbour in neighbours) // Checks each neighbour
+        {
+            Vector3 direction = transform.position - neighbour.transform.position; // Gets the direction away from the neighbour
+
+            separation += direction.normalized; // Adds a normalized version of this direction
+        }
+
+        return separation;
+    }
+
+    /// <summary>
+    /// This method calculates average velocity of the neighbours and substracts gameobject's own velocity from it.
+    /// </summary>
+    /// <returns>Vector3</returns>
+    private Vector3 CalculateAlignment()
+    {
+        Vector3 alignment = Vector3.zero;
+
+        foreach(GameObject neighbour in neighbours) // Checks each neighbour
+        {
+            alignment += neighbour.GetComponent<Rigidbody>().velocity; // Adds the velocity of the neighbour to the alignment
+        }
+
+        alignment /= neighbours.Count; // Averages the sum of velocities
+        alignment -= GetComponent<Rigidbody>().velocity; // Substracts own velocity from the average
+
+        return alignment;
+    }
+
+    private void CalculateCohesion()
+    {
+        throw new NotImplementedException();
+    }
 
     /// <summary>
     /// This method sets the new leader.
@@ -39,7 +96,7 @@ public class Flocking : MonoBehaviour
     /// <summary>
     /// Returns a center of the current group.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Vector3</returns>
     private Vector3 calculateGroupCenter()
     {
         Vector3 center = Vector3.zero;
