@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Flocking : MonoBehaviour
 {
+    private Rigidbody rigidbody;
+
     private GameObject leader;
     private Vector3 destination;
 
@@ -13,13 +15,14 @@ public class Flocking : MonoBehaviour
     private float viewDistance = 10.0f;
     public float timeBetweenAreaChecks = 1.0f;
 
-    public float maxDistanceFromNeighbours = 5.0f;
-
     private void Start ()
     {
+        rigidbody = GetComponent<Rigidbody>();
+
         //leader = gameObject.GetComponentInParent<GroupManager>().GetLeader();
         //otherMembers = gameObject.GetComponentInParent<GroupManager>().GetMembers(); // DEBUG
         neighbours = new List<GameObject>();
+
 
         InvokeRepeating("CheckAreaInView", 0.5f, timeBetweenAreaChecks);
 	}
@@ -39,6 +42,8 @@ public class Flocking : MonoBehaviour
 
     private void CalculateFollowing()
     {
+        Vector3 following = leader.transform.position - transform.position; 
+
         
     }
 
@@ -74,23 +79,24 @@ public class Flocking : MonoBehaviour
         }
 
         alignment /= neighbours.Count; // Averages the sum of velocities
-        alignment -= GetComponent<Rigidbody>().velocity; // Substracts own velocity from the average
+        alignment -= rigidbody.velocity; // Substracts own velocity from the average
 
         return alignment;
     }
 
-    private void CalculateCohesion()
-    {
-        throw new NotImplementedException();
-    }
-
     /// <summary>
-    /// This method sets the new leader.
+    /// This method calculates the direction to the center of the group.
     /// </summary>
-    /// <param name="newLeader"></param>
-    public void SetLeader(GameObject newLeader)
+    /// <returns>Vector3</returns>
+    private Vector3 CalculateCohesion()
     {
-        leader = newLeader;
+        Vector3 center = calculateGroupCenter(); // Gets the group center based on current neighbours
+
+        Vector3 cohesion = center - transform.position; // Calculates the velocity needed to "seek" this center
+        cohesion.Normalize();
+        cohesion -= rigidbody.velocity; // Substracts own velocity from the cohesion
+
+        return cohesion;
     }
 
     /// <summary>
@@ -109,6 +115,15 @@ public class Flocking : MonoBehaviour
         center /= neighbours.Count;
 
         return center;
+    }
+
+    /// <summary>
+    /// This method sets the new leader.
+    /// </summary>
+    /// <param name="newLeader"></param>
+    public void SetLeader(GameObject newLeader)
+    {
+        leader = newLeader;
     }
 
     /// <summary>

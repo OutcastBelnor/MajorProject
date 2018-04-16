@@ -56,13 +56,17 @@ public class GroupManager : MonoBehaviour
     {
         int randomIndex = UnityEngine.Random.Range(0, members.Count); // Randomly assign the leader role to a member
         leader = members[randomIndex];
-        members.Remove(leader);
 
         leader.GetComponent<Flocking>().enabled = false; // Leader needs to be steered by the EnemyBehaviour script
         leader.GetComponent<EnemyBehaviour>().enabled = true; // So the Flocking script is not needed
 
         foreach (GameObject member in members)
         {
+            if (member.Equals(leader))
+            {
+                continue;
+            }
+
             member.GetComponent<EnemyBehaviour>().enabled = false; // Member needs to be steered by the Flocking script
             member.GetComponent<Flocking>().enabled = true; // So the EnemyBehaviour is not needed
             member.GetComponent<Flocking>().SetLeader(leader);
