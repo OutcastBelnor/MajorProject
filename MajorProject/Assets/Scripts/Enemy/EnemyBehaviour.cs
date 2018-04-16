@@ -82,7 +82,7 @@ public class EnemyBehaviour : MonoBehaviour
             SetDestination(RandomPosition());
         }        
         
-        if (CalculateDistance() < viewDistance) // Checks if it "sees" the player
+        /*if (CalculateDistance() < viewDistance) // Checks if it "sees" the player
         {
             if (enemyHealth.GetHealthPoints() <= 15.0f)
             {
@@ -94,7 +94,7 @@ public class EnemyBehaviour : MonoBehaviour
             }
             
             Debug.Log("The current state is: " + currentState);
-        }
+        }*/
     }
 
     /// <summary>

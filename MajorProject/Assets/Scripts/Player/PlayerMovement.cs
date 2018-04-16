@@ -91,10 +91,10 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 moveTo = hit.point; // Gets the intersection point
                 moveTo.y = 1.0f; // Adjusts the height
 
-                if (!moveTo.Equals(transform.position))
+                /*if (!moveTo.Equals(transform.position))
                 {
                     // TODO: Change animation to walking
-                }
+                }*/
 
                 navMeshAgent.enabled = true;                    
                 navMeshAgent.SetDestination(moveTo); // Sets the destination

@@ -5,31 +5,39 @@ using UnityEngine;
 
 public class Flocking : MonoBehaviour
 {
-    private Rigidbody rigidbody;
+    private Rigidbody rigidBody;
 
     private GameObject leader;
     private Vector3 destination;
-
-    public List<GameObject> otherMembers;
+    
     public List<GameObject> neighbours; // Stores all nearby neighbours
     private float viewDistance = 10.0f;
-    public float timeBetweenAreaChecks = 1.0f;
+    //public float timeBetweenAreaChecks = 1.0f;
+
+    public float speed = 5.0f;
+    private List<Vector3> previousVectors;
 
     private void Start ()
     {
-        rigidbody = GetComponent<Rigidbody>();
-
-        //leader = gameObject.GetComponentInParent<GroupManager>().GetLeader();
-        //otherMembers = gameObject.GetComponentInParent<GroupManager>().GetMembers(); // DEBUG
+        rigidBody = GetComponent<Rigidbody>();
         neighbours = new List<GameObject>();
-
-
-        InvokeRepeating("CheckAreaInView", 0.5f, timeBetweenAreaChecks);
+        previousVectors = new List<Vector3>();
 	}
 	
-	void Update ()
+	private void Update ()
     {
-        rigidbody.AddForce(CalculateFlocking());
+        CheckAreaInView();
+        if (neighbours.Count.Equals(0))
+        {
+            return;
+        }
+
+        Vector3 flocking = CalculateFlocking();
+        Debug.Log("In Update: " + flocking);
+        rigidBody.AddForce(flocking * speed);
+
+        //transform.position.Set(transform.position.x, 1.0f, transform.position.z);
+        //transform.rotation = Quaternion.Euler(45.0f, 0.0f, 0.0f);
 	}
 
     private Vector3 CalculateFlocking()
@@ -41,7 +49,33 @@ public class Flocking : MonoBehaviour
         flockingVelocity += CalculateAlignment() * 0.25f;
         flockingVelocity += CalculateCohesion() * 0.25f;
 
+        flockingVelocity = Smoothing(flockingVelocity);
+
         return flockingVelocity;
+    }
+
+    /// <summary>
+    /// This method prevents the enemies from "twitching" resulting from cancelling out forces.
+    /// </summary>
+    /// <param name="flockingVelocity"></param>
+    /// <returns>Vector3</returns>
+    private Vector3 Smoothing(Vector3 flockingVelocity)
+    {
+        previousVectors.Add(flockingVelocity); // Adds to the list of previousVectors
+
+        if (previousVectors.Count > 5) // Checks if the list is full
+        {
+            previousVectors.RemoveAt(0); // If yes, then removes the first element
+        }
+
+        Vector3 smoothedVector = Vector3.zero; 
+        foreach(Vector3 vector in previousVectors)
+        {
+            smoothedVector += vector;
+        }
+        smoothedVector /= previousVectors.Count; // Averages the vector
+
+        return smoothedVector;
     }
 
     /// <summary>
@@ -56,12 +90,12 @@ public class Flocking : MonoBehaviour
 
         float distanceToLeader = Vector3.Distance(leader.transform.position, transform.position);
 
-        if (distanceToLeader > 0)
+        if (distanceToLeader > 1)
         {
             float speed = distanceToLeader / 0.3f;
 
             following *= speed / distanceToLeader;
-
+            
             return following;
         }
 
@@ -82,7 +116,7 @@ public class Flocking : MonoBehaviour
 
             separation += direction.normalized; // Adds a normalized version of this direction
         }
-
+        
         return separation;
     }
 
@@ -100,8 +134,8 @@ public class Flocking : MonoBehaviour
         }
 
         alignment /= neighbours.Count; // Averages the sum of velocities
-        alignment -= rigidbody.velocity; // Substracts own velocity from the average
-
+        alignment -= rigidBody.velocity; // Substracts own velocity from the average
+        
         return alignment;
     }
 
@@ -115,8 +149,8 @@ public class Flocking : MonoBehaviour
 
         Vector3 cohesion = center - transform.position; // Calculates the velocity needed to "seek" this center
         cohesion.Normalize();
-        cohesion -= rigidbody.velocity; // Substracts own velocity from the cohesion
-
+        cohesion -= GetComponent<Rigidbody>().velocity; // Substracts own velocity from the cohesion
+        
         return cohesion;
     }
 
@@ -157,12 +191,20 @@ public class Flocking : MonoBehaviour
     {
         Collider[] collidersInRange = Physics.OverlapSphere(transform.position, viewDistance);
 
+        neighbours.Clear();
+
         foreach (Collider collider in collidersInRange)
         {
-            if (collider.CompareTag("Enemy"))
+            if (collider.CompareTag("Enemy") && !gameObject.Equals(collider.gameObject))
             {
                 neighbours.Add(collider.gameObject);
             }
         }
+    }
+
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, 10.0f);
     }
 }
