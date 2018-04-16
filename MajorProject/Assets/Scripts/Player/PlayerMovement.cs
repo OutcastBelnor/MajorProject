@@ -52,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movement = rb.transform.position + new Vector3(horizontal, 0.0f, vertical); // calculate player's movement
         if (!movement.Equals(rb.transform.position)) // Checks if the current position is not the destination
         {
+            // TODO: Change animation to walking
+
             if (navMeshAgent.enabled) // Checks if the NavMeshAgent is active
             {
                 navMeshAgent.SetDestination(rb.position);
@@ -88,6 +90,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 Vector3 moveTo = hit.point; // Gets the intersection point
                 moveTo.y = 1.0f; // Adjusts the height
+
+                if (!moveTo.Equals(transform.position))
+                {
+                    // TODO: Change animation to walking
+                }
 
                 navMeshAgent.enabled = true;                    
                 navMeshAgent.SetDestination(moveTo); // Sets the destination

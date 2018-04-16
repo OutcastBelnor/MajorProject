@@ -63,8 +63,9 @@ public class GroupManager : MonoBehaviour
 
         foreach (GameObject member in members)
         {
-            gameObject.GetComponent<EnemyBehaviour>().enabled = false; // Member needs to be steered by the Flocking script
-            leader.GetComponent<Flocking>().enabled = true; // So the EnemyBehaviour is not needed
+            member.GetComponent<EnemyBehaviour>().enabled = false; // Member needs to be steered by the Flocking script
+            member.GetComponent<Flocking>().enabled = true; // So the EnemyBehaviour is not needed
+            member.GetComponent<Flocking>().SetLeader(leader);
         }
     }
     

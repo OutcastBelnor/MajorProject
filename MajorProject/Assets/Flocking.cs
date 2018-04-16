@@ -13,10 +13,10 @@ public class Flocking : MonoBehaviour
 
     public float timeBetweenAreaChecks = 1.0f;
 
-    void Start ()
+    private void Start ()
     {
-        leader = gameObject.GetComponentInParent<GroupManager>().GetLeader();
-        //otherMembers = gameObject.GetComponentInParent<GroupManager>().GetMembers();
+        //leader = gameObject.GetComponentInParent<GroupManager>().GetLeader();
+        //otherMembers = gameObject.GetComponentInParent<GroupManager>().GetMembers(); // DEBUG
         neighbours = new List<GameObject>();
 
         InvokeRepeating("CheckAreaInView", 0.5f, timeBetweenAreaChecks);
@@ -26,6 +26,15 @@ public class Flocking : MonoBehaviour
     {
 		
 	}
+
+    /// <summary>
+    /// This method sets the new leader.
+    /// </summary>
+    /// <param name="newLeader"></param>
+    public void SetLeader(GameObject newLeader)
+    {
+        leader = newLeader;
+    }
 
     /// <summary>
     /// Returns a center of the current group.

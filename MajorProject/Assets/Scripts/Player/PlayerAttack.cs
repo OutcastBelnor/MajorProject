@@ -6,6 +6,8 @@ public class PlayerAttack : MonoBehaviour
 {
     private bool isInRange;
     private List<EnemyHealth> enemiesInRange;
+    public float timeBetweenAttacks = 1.0f;
+    private float timeSinceLastAttack;
 
     public LayerMask mask; // A Layer to ignore when raycasting
 
@@ -15,12 +17,22 @@ public class PlayerAttack : MonoBehaviour
     {
         isInRange = false;
         enemiesInRange = new List<EnemyHealth>();
+
+        timeSinceLastAttack = Time.time;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        Attack();
+    }
+
+    private void Attack()
+    {
+        if (Input.GetMouseButtonDown(0) && (Time.time - timeSinceLastAttack >= timeBetweenAttacks))
         {
+            timeSinceLastAttack = Time.time;
+            // TODO: Change animation to attack
+
             if (isInRange)
             {
                 /*Debug.Log(enemiesInRange[0].name);
@@ -34,7 +46,7 @@ public class PlayerAttack : MonoBehaviour
                 {
                     return; // Returns if the enemy is null
                 }
-                
+
                 if (enemy.CompareTag("Enemy"))
                 {
                     EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
