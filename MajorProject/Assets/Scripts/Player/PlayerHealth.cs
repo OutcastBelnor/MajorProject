@@ -12,8 +12,6 @@ public class PlayerHealth : MonoBehaviour
 	// Use this for initialization
 	private void Start ()
     {
-        slider = GameObject.FindGameObjectWithTag("HealthBar").GetComponent<Slider>();
-
         healthPoints = 100;
         slider.value = healthPoints;
 	}
