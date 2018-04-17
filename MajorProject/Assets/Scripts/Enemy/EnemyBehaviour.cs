@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -33,6 +34,7 @@ public class EnemyBehaviour : MonoBehaviour
         }*/
 
         enemyNavMeshAgent = GetComponent<NavMeshAgent>();
+        enemyNavMeshAgent.enabled = true;
         enemyNavMeshAgent.updateUpAxis = false;
 
         currentState = State.Idle;
@@ -126,7 +128,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (Time.time - timeBetweenAttacks >= attackSpeed) // Checks if it time to attack
         {
-            float damage = baseDamage + Mathf.Round(Random.Range(1.0f, 5.0f)); // Determines the total damage by adding a random value to the base
+            float damage = baseDamage + Mathf.Round(UnityEngine.Random.Range(1.0f, 5.0f)); // Determines the total damage by adding a random value to the base
             playerHealth.ChangeHealthPoints(-damage); // Modifies the Player's health by the damage
 
             timeBetweenAttacks = Time.time; // Updates the timer for attacks
@@ -215,7 +217,7 @@ public class EnemyBehaviour : MonoBehaviour
     private Vector3 RandomPosition()
     {
         Vector3 randomPosition;
-        randomPosition = Random.insideUnitSphere * 10.0f + enemyNavMeshAgent.transform.position;
+        randomPosition = UnityEngine.Random.insideUnitSphere * 10.0f + enemyNavMeshAgent.transform.position;
         randomPosition.y = 1.0f;
         
         return randomPosition;

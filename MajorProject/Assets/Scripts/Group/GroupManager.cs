@@ -9,15 +9,8 @@ using UnityEngine;
 /// </summary>
 public class GroupManager : MonoBehaviour
 {
-    private List<GameObject> members;
+    public List<GameObject> members;
     public GameObject leader;
-
-	void Start ()
-    {
-        AcquireMembers();
-
-        AppointLeader();
-    }
 
     /// <summary>
     /// Gets current leader of the group.
@@ -40,13 +33,16 @@ public class GroupManager : MonoBehaviour
     /// <summary>
     /// Adds all the members of the group to the list members.
     /// </summary>
-    private void AcquireMembers()
+    public void AcquireMembers(List<GameObject> newMembers)
     {
-        members = new List<GameObject>();
-        foreach (Transform child in transform)
+        members = newMembers;
+
+        foreach(GameObject member in members)
         {
-            members.Add(child.gameObject);
+            member.transform.parent = transform;
         }
+
+        AppointLeader();
     }
 
     /// <summary>
@@ -72,6 +68,15 @@ public class GroupManager : MonoBehaviour
             member.GetComponent<Flocking>().SetLeader(leader);
         }
     }
+
+    /// <summary>
+    /// Removes the gameobject from the members list.
+    /// </summary>
+    /// <param name="member"></param>
+    public void RemoveMember(GameObject member)
+    {
+        members.Remove(member);
+    }
     
     void Update ()
     {
@@ -82,10 +87,17 @@ public class GroupManager : MonoBehaviour
 
     /// <summary>
     /// Checks if there are any members in this group.
-    /// If no, then destroy the group.
+    /// If there is one, then remove it from the group and reset its parent object.
+    /// If there are none, then destroy the group.
     /// </summary>
     private void CheckGroup()
     {
+        if (members.Count.Equals(1))
+        {
+            leader.transform.parent = null;
+            RemoveMember(leader);
+        }
+
         if (members.Count.Equals(0))
         {
             Destroy(gameObject);
@@ -98,7 +110,7 @@ public class GroupManager : MonoBehaviour
     /// </summary>
     private void CheckLeader()
     {
-        if (!leader.activeSelf)
+        if (!leader.activeSelf && members.Contains(leader))
         {
             AppointLeader();
         }

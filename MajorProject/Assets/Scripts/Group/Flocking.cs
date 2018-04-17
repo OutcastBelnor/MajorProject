@@ -7,7 +7,7 @@ public class Flocking : MonoBehaviour
 {
     private Rigidbody rigidBody;
 
-    private GameObject leader;
+    private GameObject leader { get; set; }
     private Vector3 destination;
     
     public List<GameObject> neighbours; // Stores all nearby neighbours
@@ -22,29 +22,46 @@ public class Flocking : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         neighbours = new List<GameObject>();
         previousVectors = new List<Vector3>();
-	}
-	
-	private void Update ()
+    }
+
+    /// <summary>
+    /// Sets the new Leader.
+    /// </summary>
+    /// <param name="newLeader"></param>
+    public void SetLeader(GameObject newLeader)
+    {
+        leader = newLeader;
+    }
+
+    void Update ()
     {
         CheckAreaInView();
         if (neighbours.Count.Equals(0))
         {
-            return;
-        }
+            transform.parent.GetComponent<GroupManager>().RemoveMember(gameObject);
+            transform.parent = null;
 
-        Vector3 flocking = CalculateFlocking();
-        Debug.Log("In Update: " + flocking);
-        rigidBody.AddForce(flocking * speed);
+            GetComponent<EnemyBehaviour>().enabled = true;
+            GetComponent<Grouping>().enabled = true;
+            this.enabled = false;
+        }
+        
+        rigidBody.velocity = CalculateFlocking();
+        //rigidBody.AddForce(CalculateFlocking() * speed);
 
         //transform.position.Set(transform.position.x, 1.0f, transform.position.z);
         //transform.rotation = Quaternion.Euler(45.0f, 0.0f, 0.0f);
-	}
+    }
 
+    /// <summary>
+    /// Calculates a flocking velocity based on all the steering forces.
+    /// </summary>
+    /// <returns>Vector3</returns>
     private Vector3 CalculateFlocking()
     {
         Vector3 flockingVelocity = Vector3.zero;
 
-        flockingVelocity += CalculateFollowing() * 0.25f;
+        flockingVelocity += CalculateFollowing() * 0.25f; // Adds the steering forces with appropriate weights
         flockingVelocity += CalculateSeparation() * 0.25f;
         flockingVelocity += CalculateAlignment() * 0.25f;
         flockingVelocity += CalculateCohesion() * 0.25f;
@@ -114,7 +131,7 @@ public class Flocking : MonoBehaviour
         {
             Vector3 direction = transform.position - neighbour.transform.position; // Gets the direction away from the neighbour
 
-            separation += direction.normalized; // Adds a normalized version of this direction
+            separation += direction;//.normalized; // Adds a normalized version of this direction
         }
         
         return separation;
@@ -173,15 +190,6 @@ public class Flocking : MonoBehaviour
     }
 
     /// <summary>
-    /// This method sets the new leader.
-    /// </summary>
-    /// <param name="newLeader"></param>
-    public void SetLeader(GameObject newLeader)
-    {
-        leader = newLeader;
-    }
-
-    /// <summary>
     /// Checks if there are any objects with colliders on them in viewDistance.
     /// If there are any Enemies, then add them to the neighbours.
     /// TODO: If there is Player, notify the leader and Attack.
@@ -189,13 +197,13 @@ public class Flocking : MonoBehaviour
     /// </summary>
     private void CheckAreaInView()
     {
-        Collider[] collidersInRange = Physics.OverlapSphere(transform.position, viewDistance);
+        Collider[] collidersInRange = Physics.OverlapSphere(transform.position, viewDistance); // Create a sphere that takes all of the colliders inside or touching it
 
-        neighbours.Clear();
+        neighbours.Clear(); // Clear the previous neighbours
 
-        foreach (Collider collider in collidersInRange)
+        foreach (Collider collider in collidersInRange) 
         {
-            if (collider.CompareTag("Enemy") && !gameObject.Equals(collider.gameObject))
+            if (collider.CompareTag("Enemy") && !gameObject.Equals(collider.gameObject)) // Checks if it's an Enemy and is not the current Enemy
             {
                 neighbours.Add(collider.gameObject);
             }
