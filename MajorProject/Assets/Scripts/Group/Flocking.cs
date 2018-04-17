@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Flocking : MonoBehaviour
 {
-    private Rigidbody rigidBody;
+    private Rigidbody rigidbody;
 
     private GameObject leader;
     private Vector3 destination;
@@ -15,16 +15,17 @@ public class Flocking : MonoBehaviour
     //public float timeBetweenAreaChecks = 1.0f;
 
     public float speed = 5.0f;
-    private List<Vector3> previousVectors;
+
+    private List<Vector3> previousVectors; // Stores 5 previous flocking vectors for averaging
 
     private void Start ()
     {
-        rigidBody = GetComponent<Rigidbody>();
+        rigidbody = GetComponent<Rigidbody>();
         neighbours = new List<GameObject>();
         previousVectors = new List<Vector3>();
 	}
 	
-	private void Update ()
+	void Update ()
     {
         CheckAreaInView();
         if (neighbours.Count.Equals(0))
@@ -34,17 +35,22 @@ public class Flocking : MonoBehaviour
 
         Vector3 flocking = CalculateFlocking();
         Debug.Log("In Update: " + flocking);
-        rigidBody.AddForce(flocking * speed);
-
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.AddForce(flocking * speed, ForceMode.Force);
+        
         //transform.position.Set(transform.position.x, 1.0f, transform.position.z);
         //transform.rotation = Quaternion.Euler(45.0f, 0.0f, 0.0f);
 	}
 
+    /// <summary>
+    /// Calculates the overall vector of the flocking, based on the vectors of other steering behaviours.
+    /// </summary>
+    /// <returns>Vector3</returns>
     private Vector3 CalculateFlocking()
     {
         Vector3 flockingVelocity = Vector3.zero;
 
-        flockingVelocity += CalculateFollowing() * 0.25f;
+        flockingVelocity += CalculateFollowing() * 0.25f; // Adds all the steering forces with appropriate weights
         flockingVelocity += CalculateSeparation() * 0.25f;
         flockingVelocity += CalculateAlignment() * 0.25f;
         flockingVelocity += CalculateCohesion() * 0.25f;
@@ -134,7 +140,7 @@ public class Flocking : MonoBehaviour
         }
 
         alignment /= neighbours.Count; // Averages the sum of velocities
-        alignment -= rigidBody.velocity; // Substracts own velocity from the average
+        alignment -= rigidbody.velocity; // Substracts own velocity from the average
         
         return alignment;
     }
@@ -202,9 +208,12 @@ public class Flocking : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// DEBUG: Draws the view distance of each flocking Enemy.
+    /// </summary>
     public void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, 10.0f);
+        Gizmos.DrawWireSphere(transform.position, viewDistance);
     }
 }
