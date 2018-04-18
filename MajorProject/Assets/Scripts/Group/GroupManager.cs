@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// This class is responsible for the group of enemies.
@@ -39,9 +40,15 @@ public class GroupManager : MonoBehaviour
         members.Add(member);
 
         member.transform.parent = gameObject.transform; // Adds it as a child of the group in the hierarchy
+
+        member.GetComponent<Grouping>().CancelInvoke();
         member.GetComponent<Grouping>().enabled = false;
+
         member.GetComponent<EnemyBehaviour>().enabled = false;
+        member.GetComponent<NavMeshAgent>().enabled = false;
+
         member.GetComponent<Flocking>().enabled = true;
+        member.GetComponent<Flocking>().SetLeader(leader);
     }
 
     /// <summary>
@@ -80,6 +87,8 @@ public class GroupManager : MonoBehaviour
             }
 
             member.GetComponent<EnemyBehaviour>().enabled = false; // Member needs to be steered by the Flocking script
+            member.GetComponent<NavMeshAgent>().enabled = false;
+
             member.GetComponent<Flocking>().enabled = true; // So the EnemyBehaviour is not needed
             member.GetComponent<Flocking>().SetLeader(leader);
         }

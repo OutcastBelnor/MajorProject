@@ -22,6 +22,8 @@ public class Flocking : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         neighbours = new List<GameObject>();
         previousVectors = new List<Vector3>();
+
+        InvokeRepeating("CheckAreaInView", 0.5f, 0.5f);
     }
 
     /// <summary>
@@ -35,19 +37,12 @@ public class Flocking : MonoBehaviour
 
     void Update ()
     {
-        CheckAreaInView();
-        if (neighbours.Count.Equals(0))
+        Vector3 flocking = CalculateFlocking();
+        if (flocking != null)
         {
-            transform.parent.GetComponent<GroupManager>().RemoveMember(gameObject);
-            transform.parent = null;
-
-            GetComponent<EnemyBehaviour>().enabled = true;
-            GetComponent<Grouping>().enabled = true;
-            this.enabled = false;
+            //rigidBody.velocity = flocking;
+            rigidBody.AddForce(CalculateFlocking() * speed);
         }
-        
-        rigidBody.velocity = CalculateFlocking();
-        //rigidBody.AddForce(CalculateFlocking() * speed);
 
         //transform.position.Set(transform.position.x, 1.0f, transform.position.z);
         //transform.rotation = Quaternion.Euler(45.0f, 0.0f, 0.0f);
@@ -199,14 +194,24 @@ public class Flocking : MonoBehaviour
     {
         Collider[] collidersInRange = Physics.OverlapSphere(transform.position, viewDistance); // Create a sphere that takes all of the colliders inside or touching it
 
-        neighbours.Clear(); // Clear the previous neighbours
+        neighbours = new List<GameObject>(); // Clear the previous neighbours
 
         foreach (Collider collider in collidersInRange) 
         {
-            if (collider.CompareTag("Enemy") && !gameObject.Equals(collider.gameObject)) // Checks if it's an Enemy and is not the current Enemy
+            if (collider.CompareTag("Enemy") /*&& !gameObject.Equals(collider.gameObject)*/) // Checks if it's an Enemy and is not the current Enemy
             {
                 neighbours.Add(collider.gameObject);
             }
+        }
+
+        if (neighbours.Count.Equals(0))
+        {
+            transform.parent.GetComponent<GroupManager>().RemoveMember(gameObject);
+            transform.parent = null;
+
+            GetComponent<EnemyBehaviour>().enabled = true;
+            GetComponent<Grouping>().enabled = true;
+            this.enabled = false;
         }
     }
 
