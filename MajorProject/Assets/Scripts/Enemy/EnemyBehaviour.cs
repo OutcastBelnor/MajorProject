@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent (typeof(NavMeshAgent))]
+[RequireComponent (typeof(NavMeshAgent), typeof(EnemyAttack), typeof(EnemyHealth))]
 public class EnemyBehaviour : MonoBehaviour
 {
     private Transform playerPosition;
-    private PlayerHealth playerHealth;
 
     private NavMeshAgent enemyNavMeshAgent;
     private float viewDistance = 10.0f; // Distance in which the player can be "seen"
@@ -18,34 +17,32 @@ public class EnemyBehaviour : MonoBehaviour
 
     private float wanderingTime; // Tracks how long enemy is "wandering"
 
-    private float attackSpeed = 2.5f; // Interval at which enemy can attack
-    private float timeBetweenAttacks; // Tracks how long since last attack
-    private float baseDamage = 5.0f;
+    public bool isInCombat = false;
 
     private EnemyHealth enemyHealth;
 
-    private void Start()
+    private void Awake()
     {
-        /*GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (!player.Equals(null))
         {
             playerPosition = player.transform;
-            playerHealth = player.GetComponent<PlayerHealth>();
-        }*/
+        }
 
         enemyNavMeshAgent = GetComponent<NavMeshAgent>();
         enemyNavMeshAgent.enabled = true;
         enemyNavMeshAgent.updateUpAxis = false;
 
+        enemyHealth = GetComponent<EnemyHealth>();
+    }
+
+    private void Start()
+    {
+
         currentState = State.Idle;
-        Debug.Log("The current state is: " + currentState);
 
         wanderingTime = Time.time;
         SetDestination(RandomPosition()); // Sets up the enemy to "wander" to the first point
-
-        timeBetweenAttacks = 0.5f;
-
-        enemyHealth = GetComponent<EnemyHealth>();
     }
 
     private void Update()
@@ -84,7 +81,7 @@ public class EnemyBehaviour : MonoBehaviour
             SetDestination(RandomPosition());
         }        
         
-        /*if (CalculateDistance() < viewDistance) // Checks if it "sees" the player
+        if (CalculateDistance() < viewDistance) // Checks if it "sees" the player
         {
             if (enemyHealth.GetHealthPoints() <= 15.0f)
             {
@@ -96,7 +93,7 @@ public class EnemyBehaviour : MonoBehaviour
             }
             
             Debug.Log("The current state is: " + currentState);
-        }*/
+        }
     }
 
     /// <summary>
@@ -111,13 +108,11 @@ public class EnemyBehaviour : MonoBehaviour
         if (CalculateDistance() <= 2.5f) // Checks if it is in range to attack the Player
         {
             currentState = State.Attack; // Change state to Attack
-            Debug.Log("The current state is: " + currentState);
         }
         else if (CalculateDistance() >= viewDistance) // Checks if the Player is out of view
         {
             wanderingTime = 0.5f; // Sets up this variable so the Enemy can take on a new destination to wander to shortly
             currentState = State.Idle; // Change state to Idle
-            Debug.Log("The current state is: " + currentState);
         }
     }
 
@@ -126,29 +121,30 @@ public class EnemyBehaviour : MonoBehaviour
     /// </summary>
     private void AttackState()
     {
-        if (Time.time - timeBetweenAttacks >= attackSpeed) // Checks if it time to attack
-        {
-            float damage = baseDamage + Mathf.Round(UnityEngine.Random.Range(1.0f, 5.0f)); // Determines the total damage by adding a random value to the base
-            playerHealth.ChangeHealthPoints(-damage); // Modifies the Player's health by the damage
-
-            timeBetweenAttacks = Time.time; // Updates the timer for attacks
+        if (!isInCombat)
+        { 
+            GetComponent<EnemyAttack>().StartAttacking();
+            isInCombat = true;
         }
         
         if (CalculateDistance() >= 2.5f) // Checks if it still is in range
         {
+            GetComponent<EnemyAttack>().CancelInvoke();
+            isInCombat = false;
             currentState = State.Chase; // Change state to Chase
-            Debug.Log("The current state is: " + currentState);
         }
         else if (CalculateDistance() >= viewDistance) // Checks if the Player is still in view distance
         {
+            GetComponent<EnemyAttack>().CancelInvoke();
+            isInCombat = false;
             wanderingTime = 0.5f; // Sets up this variable so the Enemy can take on a new destination to wander to shortly
             currentState = State.Idle; // Change state to Idle
-            Debug.Log("The current state is: " + currentState);
         }
         else if (enemyHealth.GetHealthPoints() < 15.0f) // Checks if health is low
         {
+            GetComponent<EnemyAttack>().CancelInvoke();
+            isInCombat = false;
             currentState = State.Flee; // Change state to Flee
-            Debug.Log("The current state is: " + currentState);
         }
     }
 
@@ -187,7 +183,6 @@ public class EnemyBehaviour : MonoBehaviour
         {
             wanderingTime = 0.5f;
             currentState = State.Idle; // Change state to Idle
-            Debug.Log("The current state is: " + currentState);
         }
     }
 

@@ -181,6 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInCombat: 0
 --- !u!114 &119570018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,7 +276,7 @@ Transform:
   m_Children:
   - {fileID: 769773282}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!114 &119570023
 MonoBehaviour:
@@ -329,7 +330,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4781562405970464, guid: 1fdd442e5d43e194b8bc8fc84d459b6f, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1fdd442e5d43e194b8bc8fc84d459b6f, type: 2}
@@ -438,7 +439,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1001 &1324559875
 Prefab:
@@ -449,7 +450,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4942172101167010, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 28.69
+      value: 17.84
       objectReference: {fileID: 0}
     - target: {fileID: 4942172101167010, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
       propertyPath: m_LocalPosition.y
@@ -622,7 +623,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4942172101167010, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 25.71048
+      value: 14.73
       objectReference: {fileID: 0}
     - target: {fileID: 4942172101167010, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
       propertyPath: m_LocalPosition.y
@@ -650,7 +651,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4942172101167010, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1859686968975922, guid: 86a47dba12aca6a43938f9f1ac730214, type: 2}
       propertyPath: m_Name
@@ -694,7 +695,7 @@ Transform:
   m_Children:
   - {fileID: 1430408732}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!195 &1860910696
 NavMeshAgent:
@@ -741,6 +742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dfb052c21da164c96bf75efdabf65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInCombat: 0
 --- !u!114 &1860910699
 MonoBehaviour:
   m_ObjectHideFlags: 0
