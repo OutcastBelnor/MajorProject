@@ -201,6 +201,12 @@ public class Flocking : MonoBehaviour
             if (collider.CompareTag("Enemy") /*&& !gameObject.Equals(collider.gameObject)*/) // Checks if it's an Enemy and is not the current Enemy
             {
                 neighbours.Add(collider.gameObject);
+
+                if (collider.transform.parent != null && !transform.parent.Equals(collider.transform.parent))
+                {
+                    collider.transform.parent.gameObject.GetComponent<GroupManager>().RemoveMember(collider.gameObject);
+                    transform.parent.GetComponent<GroupManager>().AddMember(collider.gameObject);
+                }
             }
         }
 

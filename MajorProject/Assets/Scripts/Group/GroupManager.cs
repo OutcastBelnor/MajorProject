@@ -13,6 +13,12 @@ public class GroupManager : MonoBehaviour
     public List<GameObject> members;
     public GameObject leader;
 
+    void Update()
+    {
+        CheckGroup();
+        CheckLeader();
+    }
+
     /// <summary>
     /// Gets current leader of the group.
     /// </summary>
@@ -102,12 +108,6 @@ public class GroupManager : MonoBehaviour
     {
         members.Remove(member);
     }
-    
-    void Update ()
-    {
-        CheckGroup();
-        CheckLeader();
-	}
 
     /// <summary>
     /// Checks if there are any members in this group.
@@ -134,7 +134,7 @@ public class GroupManager : MonoBehaviour
     /// </summary>
     private void CheckLeader()
     {
-        if (leader.Equals(null)) // Check if there is a leader
+        if (leader.Equals(null) || !members.Contains(leader)) // Check if there is a leader
         {
             AppointLeader(); // If not appoint a new leader
         }
