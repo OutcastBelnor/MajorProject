@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
-    private float enemyHealthPoints;
+    public float enemyHealthPoints;
 
     private void Start()
     {

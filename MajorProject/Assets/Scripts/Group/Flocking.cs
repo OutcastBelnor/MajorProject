@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody), typeof(EnemyAttack))]
 public class Flocking : MonoBehaviour
 {
     private Rigidbody rigidBody;
@@ -18,12 +18,24 @@ public class Flocking : MonoBehaviour
     public float speed = 5.0f;
     private List<Vector3> previousVectors;
 
-    private void Start ()
-    {
+    private EnemyHealth enemyHealth;
+    private EnemyAttack enemyAttack;
+    private Transform playerPosition;
+    private bool isInCombat = false;
+
+    private void Awake()
+    {        
         rigidBody = GetComponent<Rigidbody>();
         neighbours = new List<GameObject>();
         previousVectors = new List<Vector3>();
 
+        enemyHealth = GetComponent<EnemyHealth>();
+        enemyAttack = GetComponent<EnemyAttack>();
+        playerPosition = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+
+    private void Start ()
+    {
         InvokeRepeating("CheckAreaInView", 0.5f, 0.5f);
     }
 
@@ -57,10 +69,26 @@ public class Flocking : MonoBehaviour
     {
         Vector3 flockingVelocity = Vector3.zero;
 
-        flockingVelocity += CalculateFollowing() * 0.25f; // Adds the steering forces with appropriate weights
-        flockingVelocity += CalculateSeparation() * 0.25f;
+        flockingVelocity += CalculateSeparation() * 0.25f; // Adds the steering forces with appropriate weights
         flockingVelocity += CalculateAlignment() * 0.25f;
         flockingVelocity += CalculateCohesion() * 0.25f;
+
+        if (isInCombat)
+        {
+            if (enemyHealth.GetHealthPoints() < 15.0f)
+            {
+                flockingVelocity += CalculateFleeing() * 0.25f;
+            }
+            else
+            {
+                flockingVelocity += CalculateFollowing(playerPosition.position) * 0.25f;
+            }
+        }
+        else
+        {
+            flockingVelocity += CalculateFollowing(leader.transform.position) * 0.25f;
+        }
+
 
         flockingVelocity = Smoothing(flockingVelocity);
 
@@ -97,22 +125,34 @@ public class Flocking : MonoBehaviour
     /// Returns Vector3.zero if it is too close.
     /// </summary>
     /// <returns>Vector3</returns>
-    private Vector3 CalculateFollowing()
+    private Vector3 CalculateFollowing(Vector3 target)
     {
-        Vector3 following = leader.transform.position - transform.position;
+        Vector3 following = target - transform.position;
 
-        float distanceToLeader = Vector3.Distance(leader.transform.position, transform.position);
+        float distanceToTarget = Vector3.Distance(target, transform.position);
 
-        if (distanceToLeader > 1)
+        if (distanceToTarget > 1)
         {
-            float speed = distanceToLeader / 0.3f;
+            float speed = distanceToTarget / 0.3f;
 
-            following *= speed / distanceToLeader;
+            following *= speed / distanceToTarget;
             
             return following;
         }
 
         return Vector3.zero;
+    }
+
+    /// <summary>
+    /// This method calculates a steering force away from the player.
+    /// </summary>
+    /// <returns></returns>
+    private Vector3 CalculateFleeing()
+    {
+        Vector3 fleeing = transform.position - playerPosition.position; // Calculate a velocity away from the player
+        fleeing.Normalize(); // Normalizes it to be a vector of length 1
+
+        return fleeing;
     }
 
     /// <summary>
@@ -188,27 +228,45 @@ public class Flocking : MonoBehaviour
     /// <summary>
     /// Checks if there are any objects with colliders on them in viewDistance.
     /// If there are any Enemies, then add them to the neighbours.
-    /// TODO: If there is Player, notify the leader and Attack.
+    /// If there is Player, (TODO: notify the leader) and Attack.
     /// Any other tags ignore.
     /// </summary>
     private void CheckAreaInView()
     {
-        Collider[] collidersInRange = Physics.OverlapSphere(transform.position, viewDistance); // Create a sphere that takes all of the colliders inside or touching it
+        List<Collider> collidersInRange = new List<Collider>(Physics.OverlapSphere(transform.position, viewDistance)); // Create a sphere that takes all of the colliders inside or touching it
 
         neighbours = new List<GameObject>(); // Clear the previous neighbours
 
         foreach (Collider collider in collidersInRange) 
         {
-            if (collider.CompareTag("Enemy") /*&& !gameObject.Equals(collider.gameObject)*/) // Checks if it's an Enemy and is not the current Enemy
+            if (collider.CompareTag("Enemy")) // Checks if it's an Enemy
             {
                 neighbours.Add(collider.gameObject);
 
-                if (collider.transform.parent != null && !transform.parent.Equals(collider.transform.parent))
+                if (collider.transform.parent != null && !transform.parent.Equals(collider.transform.parent)) // Check if the Enemy is part of a different group
                 {
-                    collider.transform.parent.gameObject.GetComponent<GroupManager>().RemoveMember(collider.gameObject);
-                    transform.parent.GetComponent<GroupManager>().AddMember(collider.gameObject);
+                    collider.transform.parent.gameObject.GetComponent<GroupManager>().RemoveMember(collider.gameObject); // If yes then remove it from that group
+                    transform.parent.GetComponent<GroupManager>().AddMember(collider.gameObject); // And add it to the group of this Enemy
                 }
             }
+        }
+
+        if (collidersInRange.Contains(playerPosition.gameObject.GetComponent<SphereCollider>() as Collider)) // Check if Player is in view distance
+        {
+            isInCombat = true;
+            
+            if (Vector3.Distance(transform.position, playerPosition.position) <= 2.5f) // Check if Player is in attack range
+            {
+                enemyAttack.StartAttacking(); // If yes then start attacking
+            }
+            else
+            {
+                enemyAttack.CancelInvoke(); // If not then stop attacking
+            }
+        }
+        else
+        {
+            isInCombat = false; // If not then remove combat state
         }
 
         if (neighbours.Count.Equals(0))

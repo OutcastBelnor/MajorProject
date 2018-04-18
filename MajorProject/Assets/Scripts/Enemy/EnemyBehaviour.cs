@@ -20,6 +20,7 @@ public class EnemyBehaviour : MonoBehaviour
     public bool isInCombat = false;
 
     private EnemyHealth enemyHealth;
+    private EnemyAttack enemyAttack;
 
     private void Awake()
     {
@@ -34,6 +35,7 @@ public class EnemyBehaviour : MonoBehaviour
         enemyNavMeshAgent.updateUpAxis = false;
 
         enemyHealth = GetComponent<EnemyHealth>();
+        enemyAttack = GetComponent<EnemyAttack>();
     }
 
     private void Start()
@@ -123,26 +125,26 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (!isInCombat)
         { 
-            GetComponent<EnemyAttack>().StartAttacking();
+            enemyAttack.StartAttacking();
             isInCombat = true;
         }
         
-        if (CalculateDistance() >= 2.5f) // Checks if it still is in range
+        if (CalculateDistance() > 2.5f) // Checks if it still is in range
         {
-            GetComponent<EnemyAttack>().CancelInvoke();
+            enemyAttack.CancelInvoke();
             isInCombat = false;
             currentState = State.Chase; // Change state to Chase
         }
         else if (CalculateDistance() >= viewDistance) // Checks if the Player is still in view distance
         {
-            GetComponent<EnemyAttack>().CancelInvoke();
+            enemyAttack.CancelInvoke();
             isInCombat = false;
             wanderingTime = 0.5f; // Sets up this variable so the Enemy can take on a new destination to wander to shortly
             currentState = State.Idle; // Change state to Idle
         }
         else if (enemyHealth.GetHealthPoints() < 15.0f) // Checks if health is low
         {
-            GetComponent<EnemyAttack>().CancelInvoke();
+            enemyAttack.CancelInvoke();
             isInCombat = false;
             currentState = State.Flee; // Change state to Flee
         }
