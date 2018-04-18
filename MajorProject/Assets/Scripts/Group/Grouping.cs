@@ -7,31 +7,49 @@ public class Grouping : MonoBehaviour
     public GameObject enemyGroupPrefab;
 
     public float viewDistance = 10.0f;
+    public List<GameObject> neighbours;
 
-    // Update is called once per frame
-    void Update ()
+    void Start ()
     {
-        CheckForNeighbours();
+        InvokeRepeating("CheckForNeighbours", 0.5f, 0.5f);
     }
 
+    /// <summary>
+    /// Checks the area in view distance for all colliders,
+    /// then checks all the enemies among them,
+    /// for groups.
+    /// If there are no groups then create a new group with all of the enemies.
+    /// </summary>
     private void CheckForNeighbours()
     {
         Collider[] collidersInRange = Physics.OverlapSphere(transform.position, viewDistance); // Create a sphere that takes all of the colliders inside or touching it
 
-        List<GameObject> neighbours = new List<GameObject>(); // Clear the previous neighbours
+        neighbours = new List<GameObject>(); // Clear the previous neighbours
 
         foreach (Collider collider in collidersInRange)
         {
-            if (collider.CompareTag("Enemy") && !gameObject.Equals(collider.gameObject)) // Checks if it's an Enemy and is not the current Enemy
+            GameObject neighbour = collider.gameObject;
+
+            if (neighbour.CompareTag("Enemy") && !gameObject.Equals(neighbour)) // Checks if it's an Enemy and is not the current Enemy
             {
-                neighbours.Add(collider.gameObject);
+                if (collider.gameObject.transform.parent != null) // Checks if they have a group
+                {
+                    neighbour.GetComponent<GroupManager>().AddMember(gameObject); // If yes, then add this Enemy to their group
+                    return;
+                }
+                else
+                {
+                    neighbours.Add(collider.gameObject); // If not then add to the list of neighbours
+                }
             }
         }
 
-        if (!neighbours.Count.Equals(0))
+        if (!neighbours.Count.Equals(0)) // Checks if there is at least one Enemy in range without a group
         {
-            GameObject enemyGroup = Instantiate(enemyGroupPrefab, transform.position, transform.rotation) as GameObject;
-            enemyGroup.GetComponent<GroupManager>().AcquireMembers(neighbours);
+            neighbours.Add(gameObject); // Adds itself to the list so that it is included in the list
+
+            GameObject enemyGroup = Instantiate(enemyGroupPrefab, transform.position, transform.rotation) as GameObject; // Create a new Group GameObject
+            enemyGroup.GetComponent<GroupManager>().AcquireMembers(neighbours); // Add all of the possible Enemies to this group
         }
     }
 }

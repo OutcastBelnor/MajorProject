@@ -31,6 +31,20 @@ public class GroupManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Adds a new member to the group
+    /// </summary>
+    /// <param name="member"></param>
+    public void AddMember(GameObject member)
+    {
+        members.Add(member);
+
+        member.transform.parent = gameObject.transform; // Adds it as a child of the group in the hierarchy
+        member.GetComponent<Grouping>().enabled = false;
+        member.GetComponent<EnemyBehaviour>().enabled = false;
+        member.GetComponent<Flocking>().enabled = true;
+    }
+
+    /// <summary>
     /// Adds all the members of the group to the list members.
     /// </summary>
     public void AcquireMembers(List<GameObject> newMembers)
@@ -39,7 +53,9 @@ public class GroupManager : MonoBehaviour
 
         foreach(GameObject member in members)
         {
-            member.transform.parent = transform;
+            member.transform.parent = transform; // Change the member to be a child of this group in hierarchy
+            member.GetComponent<Grouping>().CancelInvoke(); // Cancels CheckAreaForNeighbours
+            member.GetComponent<Grouping>().enabled = false; // Disables grouping script
         }
 
         AppointLeader();
@@ -81,7 +97,6 @@ public class GroupManager : MonoBehaviour
     void Update ()
     {
         CheckGroup();
-
         CheckLeader();
 	}
 
@@ -92,13 +107,13 @@ public class GroupManager : MonoBehaviour
     /// </summary>
     private void CheckGroup()
     {
-        if (members.Count.Equals(1))
+        if (members.Count.Equals(1)) // If there is only one member, then remove it from the group
         {
             leader.transform.parent = null;
             RemoveMember(leader);
         }
 
-        if (members.Count.Equals(0))
+        if (members.Count.Equals(0)) // If there are no members then destroy the group
         {
             Destroy(gameObject);
         }
@@ -110,9 +125,9 @@ public class GroupManager : MonoBehaviour
     /// </summary>
     private void CheckLeader()
     {
-        if (!leader.activeSelf && members.Contains(leader))
+        if (leader.Equals(null)) // Check if there is a leader
         {
-            AppointLeader();
+            AppointLeader(); // If not appoint a new leader
         }
     }
 }

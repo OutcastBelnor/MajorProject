@@ -578,6 +578,7 @@ GameObject:
   - component: {fileID: 1860910701}
   - component: {fileID: 1860910700}
   - component: {fileID: 1860910699}
+  - component: {fileID: 1860910703}
   - component: {fileID: 1860910698}
   - component: {fileID: 1860910697}
   - component: {fileID: 1860910696}
@@ -729,3 +730,17 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!114 &1860910703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1860910694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d588d776de52a0e41b5634914a0b0405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyGroupPrefab: {fileID: 1883119141564124, guid: cca61ae0b56a22e4486d934cbadb275c,
+    type: 2}
+  viewDistance: 10
