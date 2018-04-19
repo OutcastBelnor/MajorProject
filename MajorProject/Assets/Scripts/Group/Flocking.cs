@@ -40,6 +40,15 @@ public class Flocking : MonoBehaviour
     }
 
     /// <summary>
+    /// On disabling this script, will cancel checking area in view
+    /// for neighbours and the player.
+    /// </summary>
+    private void OnDisable()
+    {
+        CancelInvoke();
+    }
+
+    /// <summary>
     /// Sets the new Leader.
     /// </summary>
     /// <param name="newLeader"></param>

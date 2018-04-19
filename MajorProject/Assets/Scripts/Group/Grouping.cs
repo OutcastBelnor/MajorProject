@@ -15,6 +15,14 @@ public class Grouping : MonoBehaviour
     }
 
     /// <summary>
+    /// Called on disabling this script, will cancel checking for neighbours.
+    /// </summary>
+    private void OnDisable()
+    {
+        CancelInvoke();
+    }
+
+    /// <summary>
     /// Checks the area in view distance for all colliders,
     /// then checks all the enemies among them,
     /// for groups.

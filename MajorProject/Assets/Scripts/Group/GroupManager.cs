@@ -13,10 +13,13 @@ public class GroupManager : MonoBehaviour
     public List<GameObject> members;
     public GameObject leader;
 
-    void Update()
+    /// <summary>
+    /// Called on disabling this script, will cancel checking the group
+    /// and the leader.
+    /// </summary>
+    private void OnDisable()
     {
-        CheckGroup();
-        CheckLeader();
+        CancelInvoke();
     }
 
     /// <summary>
@@ -38,7 +41,8 @@ public class GroupManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds a new member to the group
+    /// Adds a new member to the group, disables unnecessary scripts,
+    /// and enables flocking.
     /// </summary>
     /// <param name="member"></param>
     public void AddMember(GameObject member)
@@ -47,11 +51,8 @@ public class GroupManager : MonoBehaviour
 
         member.transform.parent = gameObject.transform; // Adds it as a child of the group in the hierarchy
 
-        member.GetComponent<Grouping>().CancelInvoke();
         member.GetComponent<Grouping>().enabled = false;
-
         member.GetComponent<EnemyBehaviour>().enabled = false;
-        member.GetComponent<NavMeshAgent>().enabled = false;
 
         member.GetComponent<Flocking>().enabled = true;
         member.GetComponent<Flocking>().SetLeader(leader);
@@ -67,11 +68,12 @@ public class GroupManager : MonoBehaviour
         foreach(GameObject member in members)
         {
             member.transform.parent = transform; // Change the member to be a child of this group in hierarchy
-            member.GetComponent<Grouping>().CancelInvoke(); // Cancels CheckAreaForNeighbours
             member.GetComponent<Grouping>().enabled = false; // Disables grouping script
         }
 
         AppointLeader();
+
+        InvokeRepeating("CheckGroup", 0.1f, 0.5f);
     }
 
     /// <summary>
@@ -93,6 +95,7 @@ public class GroupManager : MonoBehaviour
             }
 
             member.GetComponent<EnemyBehaviour>().enabled = false; // Member needs to be steered by the Flocking script
+            member.GetComponent<Grouping>().enabled = false; // So disable all the unnecessary scripts
             member.GetComponent<NavMeshAgent>().enabled = false;
 
             member.GetComponent<Flocking>().enabled = true; // So the EnemyBehaviour is not needed
@@ -116,6 +119,8 @@ public class GroupManager : MonoBehaviour
     /// </summary>
     private void CheckGroup()
     {
+        CheckLeader();
+
         if (members.Count.Equals(1)) // If there is only one member, then remove it from the group
         {
             leader.transform.parent = null;

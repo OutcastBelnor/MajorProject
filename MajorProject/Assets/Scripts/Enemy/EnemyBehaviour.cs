@@ -40,11 +40,20 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Start()
     {
-
         currentState = State.Idle;
 
         wanderingTime = Time.time;
         SetDestination(RandomPosition()); // Sets up the enemy to "wander" to the first point
+    }
+
+    /// <summary>
+    /// Called when this script is disabled.
+    /// Disables NavMeshAgent and cancels attacking in EnemyAttack.
+    /// </summary>
+    private void OnDisable()
+    {
+        enemyNavMeshAgent.enabled = false;
+        enemyAttack.CancelInvoke();
     }
 
     private void Update()
