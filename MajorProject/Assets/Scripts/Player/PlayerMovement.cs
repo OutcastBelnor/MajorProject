@@ -37,18 +37,21 @@ public class PlayerMovement : MonoBehaviour
     /// <summary> Movement done with arrows or WSAD keys </summary>
     private void KeyboardMovement()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical"); // Get the input from the keyboard
-
-        SpriteRenderer sprite = gameObject.GetComponentInChildren<SpriteRenderer>();
-        if (horizontal < 0)
+        float horizontal = Input.GetAxisRaw("Horizontal"); // Get the input from the keyboard
+        float vertical = Input.GetAxisRaw("Vertical");
+        
+        SpriteRenderer[] sprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
+        foreach(SpriteRenderer sprite in sprites)
         {
-            sprite.flipX = true;
-        }
-        else if (horizontal > 0)
-        {
-            sprite.flipX = false;   
-        }
+            if (horizontal < 0)
+            {
+                FlipLeft(sprite);
+            }
+            else if (horizontal > 0)
+            {
+                FlipRight(sprite);
+            }
+        }        
 
         Vector3 movement = rb.transform.position + new Vector3(horizontal, 0.0f, vertical); // calculate player's movement
         if (!movement.Equals(rb.transform.position)) // Checks if the current position is not the destination
@@ -74,14 +77,17 @@ public class PlayerMovement : MonoBehaviour
             float screenCenter = Screen.width / 2;
             float mousePosX = Input.mousePosition.x;
 
-            SpriteRenderer sprite = gameObject.GetComponentInChildren<SpriteRenderer>();
-            if (mousePosX < screenCenter)
+            SpriteRenderer[] sprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
+            foreach (SpriteRenderer sprite in sprites)
             {
-                sprite.flipX = true;
-            }
-            else if (mousePosX > screenCenter)
-            {
-                sprite.flipX = false;
+                if (mousePosX < screenCenter)
+                {
+                    FlipLeft(sprite);
+                }
+                else if (mousePosX > screenCenter)
+                {
+                    FlipRight(sprite);
+                }
             }
 
             RaycastHit hit;
@@ -100,6 +106,42 @@ public class PlayerMovement : MonoBehaviour
                 navMeshAgent.enabled = true;                    
                 navMeshAgent.SetDestination(moveTo); // Sets the destination
             }
+        }
+    }
+
+    /// <summary>
+    /// Flips the sprite to the right.
+    /// If it's an arm or legs, changes its relative position.
+    /// </summary>
+    /// <param name="sprite"></param>
+    private static void FlipRight(SpriteRenderer sprite)
+    {
+        sprite.flipX = false;
+        if (sprite.name.Equals("sword_hand"))
+        {
+            sprite.transform.localPosition = new Vector3(-10.0f, -4.5f, 0.0f);
+        }
+        else if (sprite.name.Equals("legs"))
+        {
+            sprite.transform.localPosition = new Vector3(1.0f, -23.5f, 0.0f);
+        }
+    }
+
+    /// <summary>
+    /// Flips the sprite to the left.
+    /// If it's an arm or legs, changes its relative position.
+    /// </summary>
+    /// <param name="sprite"></param>
+    private static void FlipLeft(SpriteRenderer sprite)
+    {
+        sprite.flipX = true;
+        if (sprite.name.Equals("sword_hand"))
+        {
+            sprite.transform.localPosition = new Vector3(10.0f, -4.5f, 0.0f); // Changes the relative position of the arm
+        }
+        else if (sprite.name.Equals("legs"))
+        {
+            sprite.transform.localPosition = new Vector3(-1.0f, -23.5f, 0.0f); // Changes the relative position of legs
         }
     }
 
