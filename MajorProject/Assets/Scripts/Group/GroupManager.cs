@@ -110,6 +110,9 @@ public class GroupManager : MonoBehaviour
     public void RemoveMember(GameObject member)
     {
         members.Remove(member);
+
+        member.GetComponent<EnemyBehaviour>().enabled = true;
+        member.GetComponent<Grouping>().enabled = true;
     }
 
     /// <summary>

@@ -25,7 +25,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void Awake()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (!player.Equals(null))
+        if (player != null)
         {
             playerPosition = player.transform;
         }
@@ -40,6 +40,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Start()
     {
+        enemyNavMeshAgent.enabled = true;
+
         currentState = State.Idle;
 
         wanderingTime = Time.time;

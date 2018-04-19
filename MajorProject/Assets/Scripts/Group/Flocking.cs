@@ -258,7 +258,7 @@ public class Flocking : MonoBehaviour
 
         foreach (Collider collider in collidersInRange) 
         {
-            if (collider.CompareTag("Enemy")) // Checks if it's an Enemy
+            if (collider.CompareTag("Enemy") && !collider.gameObject.Equals(gameObject)) // Checks if it's an Enemy and not the current one
             {
                 neighbours.Add(collider.gameObject);
 

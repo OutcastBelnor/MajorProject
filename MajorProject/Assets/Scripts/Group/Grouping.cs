@@ -38,7 +38,7 @@ public class Grouping : MonoBehaviour
         {
             GameObject neighbour = collider.gameObject;
 
-            if (neighbour.CompareTag("Enemy")) // Checks if it's an Enemy
+            if (collider.CompareTag("Enemy") && !collider.gameObject.Equals(gameObject)) // Checks if it's an Enemy and not the current one
             {
                 if (collider.gameObject.transform.parent != null) // Checks if they have a group
                 {
