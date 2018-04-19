@@ -39,19 +39,9 @@ public class PlayerMovement : MonoBehaviour
     {
         float horizontal = Input.GetAxisRaw("Horizontal"); // Get the input from the keyboard
         float vertical = Input.GetAxisRaw("Vertical");
-        
+
         SpriteRenderer[] sprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
-        foreach(SpriteRenderer sprite in sprites)
-        {
-            if (horizontal < 0)
-            {
-                FlipLeft(sprite);
-            }
-            else if (horizontal > 0)
-            {
-                FlipRight(sprite);
-            }
-        }        
+        FlipSprite(horizontal, sprites);
 
         Vector3 movement = rb.transform.position + new Vector3(horizontal, 0.0f, vertical); // calculate player's movement
         if (!movement.Equals(rb.transform.position)) // Checks if the current position is not the destination
@@ -66,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
 
             rb.position = movement * speed; // assign the new position with the speed
         }
-        
+
     }
 
     /// <summary> Movement done with mouse </summary>
@@ -78,17 +68,7 @@ public class PlayerMovement : MonoBehaviour
             float mousePosX = Input.mousePosition.x;
 
             SpriteRenderer[] sprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
-            foreach (SpriteRenderer sprite in sprites)
-            {
-                if (mousePosX < screenCenter)
-                {
-                    FlipLeft(sprite);
-                }
-                else if (mousePosX > screenCenter)
-                {
-                    FlipRight(sprite);
-                }
-            }
+            FlipSprite(mousePosX - screenCenter, sprites);
 
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Creates a ray that is cast from the camera at the mouse cursor
@@ -110,38 +90,51 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Flips the sprite to the right.
-    /// If it's an arm or legs, changes its relative position.
+    /// Flips the sprites in the appropriate direction.
+    /// If it's an arm of legs, changes its relative position.
     /// </summary>
-    /// <param name="sprite"></param>
-    private static void FlipRight(SpriteRenderer sprite)
+    /// <param name="direction"></param>
+    /// <param name="sprites"></param>
+    private static void FlipSprite(float direction, SpriteRenderer[] sprites)
     {
-        sprite.flipX = false;
-        if (sprite.name.Equals("sword_hand"))
+        foreach (SpriteRenderer sprite in sprites)
         {
-            sprite.transform.localPosition = new Vector3(-10.0f, -4.5f, 0.0f);
-        }
-        else if (sprite.name.Equals("legs"))
-        {
-            sprite.transform.localPosition = new Vector3(1.0f, -23.5f, 0.0f);
-        }
-    }
-
-    /// <summary>
-    /// Flips the sprite to the left.
-    /// If it's an arm or legs, changes its relative position.
-    /// </summary>
-    /// <param name="sprite"></param>
-    private static void FlipLeft(SpriteRenderer sprite)
-    {
-        sprite.flipX = true;
-        if (sprite.name.Equals("sword_hand"))
-        {
-            sprite.transform.localPosition = new Vector3(10.0f, -4.5f, 0.0f); // Changes the relative position of the arm
-        }
-        else if (sprite.name.Equals("legs"))
-        {
-            sprite.transform.localPosition = new Vector3(-1.0f, -23.5f, 0.0f); // Changes the relative position of legs
+            if (direction > 0)
+            {
+                Vector3 scale = sprite.transform.localScale;
+                if (scale.x < 0)
+                { 
+                    scale.x *= -1.0f;
+                    sprite.transform.localScale = scale;
+                }
+                /*sprite.flipX = false;
+                if (sprite.name.Equals("sword_hand"))
+                {
+                    sprite.transform.localPosition = new Vector3(-10.0f, -4.5f, 0.0f);
+                }
+                else if (sprite.name.Equals("legs"))
+                {
+                    sprite.transform.localPosition = new Vector3(1.0f, -23.5f, 0.0f);
+                }*/
+            }
+            else if (direction < 0)
+            {
+                Vector3 scale = sprite.transform.localScale;
+                if (scale.x > 0)
+                {
+                    scale.x *= -1.0f;
+                    sprite.transform.localScale = scale;
+                }
+                /*sprite.flipX = true;
+                if (sprite.name.Equals("sword_hand"))
+                {
+                    sprite.transform.localPosition = new Vector3(10.0f, -4.5f, 0.0f); // Changes the relative position of the arm
+                }
+                else if (sprite.name.Equals("legs"))
+                {
+                    sprite.transform.localPosition = new Vector3(-1.0f, -23.5f, 0.0f); // Changes the relative position of legs
+                }*/
+            }
         }
     }
 
@@ -152,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
 
         currentPosition.x = Mathf.Clamp(currentPosition.x, -220.0f, 220.0f); // clamp the position of the player
         currentPosition.z = Mathf.Clamp(currentPosition.z, -220.0f, 220.0f); // so it doesn't go out of the screen
-        currentPosition.y = 1.0f; // ensure that the character is at the appropriate height
+        currentPosition.y = 0.85f; // ensure that the character is at the appropriate height
 
         rb.transform.position = currentPosition;
     }

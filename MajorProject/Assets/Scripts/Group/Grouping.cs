@@ -9,7 +9,11 @@ public class Grouping : MonoBehaviour
     public float viewDistance = 10.0f;
     public List<GameObject> neighbours;
 
-    void Start ()
+    /// <summary>
+    /// When this script is enabled, start checking the area in view distance
+    /// for neighbours.
+    /// </summary>
+    private void OnEnable()
     {
         InvokeRepeating("CheckForNeighbours", 0.5f, 0.5f);
     }
