@@ -136,15 +136,25 @@ public class Flocking : MonoBehaviour
     /// <returns>Vector3</returns>
     private Vector3 CalculateFollowing(Vector3 target)
     {
-        Vector3 following = target - transform.position;
+        Vector3 following = target - transform.position; // Calculates the seek steering behaviour to the target
 
         float distanceToTarget = Vector3.Distance(target, transform.position);
 
-        if (distanceToTarget > 1)
+        if (target.Equals(leader.transform.position)) // Checks if following the leader
         {
-            float speed = distanceToTarget / 0.3f;
+            float dotProduct = Vector3.Dot(transform.position, target); // Calculates the dot product to check the relative positions of the leader and the Enemy
 
-            following *= speed / distanceToTarget;
+            if (dotProduct > 0 && distanceToTarget <= 1) // Checks if the Enemy is in front of the leader and is in a close distance to him
+            {
+                return CalculateFleeing(); // If yes then move out of the leader's way
+            }
+        }
+
+        if (distanceToTarget > 1) // Checks if it is at least one unit away from the target
+        {
+            float speed = distanceToTarget / 0.3f; // If yes then calculate the speed necessary to reach the target with decelaration
+
+            following *= speed / distanceToTarget; // Modifies the seek steering behaviour by the speed to get the arrival behaviour
             
             return following;
         }
