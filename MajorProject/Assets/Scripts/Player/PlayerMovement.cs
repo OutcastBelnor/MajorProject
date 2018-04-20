@@ -8,8 +8,8 @@ using UnityEngine.AI;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed; // a variable that will control the speed of the character
-
-    private Rigidbody rb;
+    
+    private Animator animator;
 
     public LayerMask mask; // A Layer to ignore when raycasting
 
@@ -19,19 +19,21 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Start ()
     {
-        rb = GetComponent<Rigidbody>(); 
+        animator = GetComponentInChildren<Animator>();
 
         navMeshAgent = GetComponent<NavMeshAgent>(); // Sets up NavMeshAgent
         navMeshAgent.updateUpAxis = false; // Prevents NavMeshAgent from rotating the camera
-        navMeshAgent.SetDestination(rb.position); // First destination, which is the current position
+        navMeshAgent.SetDestination(transform.position); // First destination, which is the current position
 	}
 	
 	private void Update ()
     {
-        KeyboardMovement();
-        MouseMovement();
+        Debug.Log("Local position" + transform.InverseTransformDirection(GameObject.FindGameObjectWithTag("Enemy").transform.position));
 
         LimitPosition();
+
+        KeyboardMovement();
+        MouseMovement();
     }
 
     /// <summary> Movement done with arrows or WSAD keys </summary>
@@ -40,23 +42,27 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal"); // Get the input from the keyboard
         float vertical = Input.GetAxisRaw("Vertical");
 
-        SpriteRenderer[] sprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
-        FlipSprite(horizontal, sprites);
+        Transform parent = gameObject.GetComponentInChildren<SpriteRenderer>().transform.parent;
+        FlipSprite(horizontal, parent);
 
-        Vector3 movement = rb.transform.position + new Vector3(horizontal, 0.0f, vertical); // calculate player's movement
-        if (!movement.Equals(rb.transform.position)) // Checks if the current position is not the destination
+        Vector3 movement = transform.position + new Vector3(horizontal, 0.0f, vertical); // calculate player's movement
+        if (!movement.Equals(transform.position)) // Checks if the current position is not the destination
         {
             // TODO: Change animation to walking
 
             if (navMeshAgent.enabled) // Checks if the NavMeshAgent is active
             {
-                navMeshAgent.SetDestination(rb.position);
+                navMeshAgent.SetDestination(transform.position);
                 navMeshAgent.enabled = false;
             }
 
-            rb.position = movement * speed; // assign the new position with the speed
+            transform.position = Vector3.Lerp(transform.position, movement, speed); // assign the new position with the speed
+
+            animator.SetBool("isMoving", true);
+            return;
         }
 
+        animator.SetBool("isMoving", false);
     }
 
     /// <summary> Movement done with mouse </summary>
@@ -64,11 +70,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1)) // Checks if the right mouse button is clicked
         {
+            //animator.SetBool("isMoving", true);
+
             float screenCenter = Screen.width / 2;
             float mousePosX = Input.mousePosition.x;
 
-            SpriteRenderer[] sprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
-            FlipSprite(mousePosX - screenCenter, sprites);
+            Transform parent = gameObject.GetComponentInChildren<SpriteRenderer>().transform.parent;
+            FlipSprite(mousePosX - screenCenter, parent);
 
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Creates a ray that is cast from the camera at the mouse cursor
@@ -86,7 +94,11 @@ public class PlayerMovement : MonoBehaviour
                 navMeshAgent.enabled = true;                    
                 navMeshAgent.SetDestination(moveTo); // Sets the destination
             }
+
+            return;
         }
+
+        //animator.SetBool("isMoving", false);
     }
 
     /// <summary>
@@ -95,45 +107,24 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     /// <param name="direction"></param>
     /// <param name="sprites"></param>
-    private static void FlipSprite(float direction, SpriteRenderer[] sprites)
+    private static void FlipSprite(float direction, Transform parent)
     {
-        foreach (SpriteRenderer sprite in sprites)
-        {
-            if (direction > 0)
-            {
-                Vector3 scale = sprite.transform.localScale;
-                if (scale.x < 0)
-                { 
-                    scale.x *= -1.0f;
-                    sprite.transform.localScale = scale;
-                }
-                /*sprite.flipX = false;
-                if (sprite.name.Equals("sword_hand"))
-                {
-                    sprite.transform.localPosition = new Vector3(-10.0f, -4.5f, 0.0f);
-                }
-                else if (sprite.name.Equals("legs"))
-                {
-                    sprite.transform.localPosition = new Vector3(1.0f, -23.5f, 0.0f);
-                }*/
+        Vector3 scale = parent.transform.localScale;
+
+        if (direction > 0)
+        {            
+            if (scale.x < 0)
+            { 
+                scale.x *= -1.0f;
+                parent.transform.localScale = scale;
             }
-            else if (direction < 0)
+        }
+        else if (direction < 0)
+        {
+            if (scale.x > 0)
             {
-                Vector3 scale = sprite.transform.localScale;
-                if (scale.x > 0)
-                {
-                    scale.x *= -1.0f;
-                    sprite.transform.localScale = scale;
-                }
-                /*sprite.flipX = true;
-                if (sprite.name.Equals("sword_hand"))
-                {
-                    sprite.transform.localPosition = new Vector3(10.0f, -4.5f, 0.0f); // Changes the relative position of the arm
-                }
-                else if (sprite.name.Equals("legs"))
-                {
-                    sprite.transform.localPosition = new Vector3(-1.0f, -23.5f, 0.0f); // Changes the relative position of legs
-                }*/
+                scale.x *= -1.0f;
+                parent.transform.localScale = scale;
             }
         }
     }
@@ -141,12 +132,12 @@ public class PlayerMovement : MonoBehaviour
     /// <summary> Limits the position to the boundaries of the level and adjusts the height </summary>
     private void LimitPosition()
     {
-        Vector3 currentPosition = rb.transform.position;
+        Vector3 currentPosition = transform.position;
 
         currentPosition.x = Mathf.Clamp(currentPosition.x, -220.0f, 220.0f); // clamp the position of the player
         currentPosition.z = Mathf.Clamp(currentPosition.z, -220.0f, 220.0f); // so it doesn't go out of the screen
         currentPosition.y = 0.85f; // ensure that the character is at the appropriate height
 
-        rb.transform.position = currentPosition;
+        transform.position = currentPosition;
     }
 }

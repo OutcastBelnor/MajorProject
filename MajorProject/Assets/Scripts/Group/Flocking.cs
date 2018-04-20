@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(Rigidbody), typeof(EnemyAttack))]
 public class Flocking : MonoBehaviour
 {
     private Rigidbody rigidBody;
 
-    private GameObject leader { get; set; }
+    public GameObject leader;// { get; set; }
     private Vector3 destination;
     
     public List<GameObject> neighbours; // Stores all nearby neighbours
@@ -62,7 +63,7 @@ public class Flocking : MonoBehaviour
         Vector3 flocking = CalculateFlocking();
         if (flocking != null)
         {
-            //rigidBody.velocity = flocking;
+            //rigidBody.velocity = flocking; 
             rigidBody.AddForce(CalculateFlocking() * speed);
         }
 
@@ -78,7 +79,7 @@ public class Flocking : MonoBehaviour
     {
         Vector3 flockingVelocity = Vector3.zero;
 
-        flockingVelocity += CalculateSeparation() * 0.25f; // Adds the steering forces with appropriate weights
+        flockingVelocity += CalculateSeparation() * 0.5f; // Adds the steering forces with appropriate weights
         flockingVelocity += CalculateAlignment() * 0.25f;
         flockingVelocity += CalculateCohesion() * 0.25f;
 
@@ -86,7 +87,7 @@ public class Flocking : MonoBehaviour
         {
             if (enemyHealth.GetHealthPoints() < 15.0f)
             {
-                flockingVelocity += CalculateFleeing() * 0.25f;
+                flockingVelocity += CalculateFleeing(playerPosition.position) * 0.25f;
             }
             else
             {
@@ -142,15 +143,33 @@ public class Flocking : MonoBehaviour
 
         if (target.Equals(leader.transform.position)) // Checks if following the leader
         {
-            float dotProduct = Vector3.Dot(transform.position, target); // Calculates the dot product to check the relative positions of the leader and the Enemy
+            Vector3 leaderDestination = leader.GetComponent<NavMeshAgent>().destination;
 
-            if (dotProduct > 0 && distanceToTarget <= 1) // Checks if the Enemy is in front of the leader and is in a close distance to him
+            if (leader.transform.position.x < transform.position.x)
             {
-                return CalculateFleeing(); // If yes then move out of the leader's way
+                if (transform.position.x < leaderDestination.x && Vector3.Distance(leader.transform.position, transform.position) < 2)
+                {
+                    return CalculateFleeing(leader.transform.position);
+                }
             }
+            else if (leader.transform.position.x > transform.position.x)
+            {
+                if (transform.position.x > leaderDestination.x && Vector3.Distance(leader.transform.position, transform.position) < 2)
+                {
+                    return CalculateFleeing(leader.transform.position);
+                }
+            }
+
+            /*//float dotProduct = Vector3.Dot(rigidBody.velocity, leader.GetComponent<Rigidbody>().velocity); // Calculates the dot product to check the relative positions of the leader and the Enemy
+            Vector3 localPos = leader.transform.InverseTransformDirection(transform.position);
+
+            if (localPos.x > 0 && distanceToTarget <= 1.5f) // Checks if the Enemy is in front of the leader and is in a close distance to him
+            {
+                return CalculateFleeing(leader.transform.position); // If yes then move out of the leader's way
+            }*/
         }
 
-        if (distanceToTarget > 1) // Checks if it is at least one unit away from the target
+        if (distanceToTarget > 1.5) // Checks if it is at least one unit away from the target
         {
             float speed = distanceToTarget / 0.3f; // If yes then calculate the speed necessary to reach the target with decelaration
 
@@ -166,9 +185,9 @@ public class Flocking : MonoBehaviour
     /// This method calculates a steering force away from the player.
     /// </summary>
     /// <returns></returns>
-    private Vector3 CalculateFleeing()
+    private Vector3 CalculateFleeing(Vector3 target)
     {
-        Vector3 fleeing = transform.position - playerPosition.position; // Calculate a velocity away from the player
+        Vector3 fleeing = transform.position - target; // Calculate a velocity away from the player
         fleeing.Normalize(); // Normalizes it to be a vector of length 1
 
         return fleeing;
@@ -186,7 +205,7 @@ public class Flocking : MonoBehaviour
         {
             Vector3 direction = transform.position - neighbour.transform.position; // Gets the direction away from the neighbour
 
-            separation += direction;//.normalized; // Adds a normalized version of this direction
+            separation += direction.normalized / direction.magnitude; // Adds a normalized version of this direction
         }
         
         return separation;

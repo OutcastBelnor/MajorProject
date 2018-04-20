@@ -48,6 +48,11 @@ public class EnemyBehaviour : MonoBehaviour
         SetDestination(RandomPosition()); // Sets up the enemy to "wander" to the first point
     }
 
+    private void OnEnable()
+    {
+        enemyNavMeshAgent.enabled = true;
+    }
+
     /// <summary>
     /// Called when this script is disabled.
     /// Disables NavMeshAgent and cancels attacking in EnemyAttack.

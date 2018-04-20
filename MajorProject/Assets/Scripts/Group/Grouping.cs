@@ -60,7 +60,7 @@ public class Grouping : MonoBehaviour
         {
             neighbours.Add(gameObject); // Adds itself to the list so that it is included in the list
 
-            GameObject enemyGroup = Instantiate(enemyGroupPrefab, transform.position, transform.rotation) as GameObject; // Create a new Group GameObject
+            GameObject enemyGroup = Instantiate(enemyGroupPrefab, Vector3.zero, Quaternion.identity) as GameObject; // Create a new Group GameObject
             enemyGroup.GetComponent<GroupManager>().AcquireMembers(neighbours); // Add all of the possible Enemies to this group
         }
     }

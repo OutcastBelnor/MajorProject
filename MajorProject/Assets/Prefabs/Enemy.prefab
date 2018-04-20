@@ -116,6 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d14d25229fcc404eaa94075a115c2dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyHealthPoints: 0
 --- !u!114 &114294580353721548
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -127,8 +128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab21af796661b674eae7b972d95c53bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leader: {fileID: 0}
   neighbours: []
-  speed: 5
+  speed: 10
 --- !u!114 &114700455060301254
 MonoBehaviour:
   m_ObjectHideFlags: 1
