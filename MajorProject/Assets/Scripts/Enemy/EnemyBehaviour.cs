@@ -9,11 +9,13 @@ using UnityEngine.AI;
 public class EnemyBehaviour : MonoBehaviour
 {
     private EnemyStats enemyStats;
+    private EnemyHealth enemyHealth;
+    private EnemyAttack enemyAttack;
+    private NavMeshAgent enemyNavMeshAgent;
 
     private Transform playerPosition;
-
-    private NavMeshAgent enemyNavMeshAgent;
-    private float viewDistance = 10.0f; // Distance in which the player can be "seen"
+    private PlayerIntensity playerIntensity;
+    private int intensityIncrease = 2;
     
     private enum State {Idle, Chase, Attack, Flee}; // States for the Finite State Machine
     private State currentState;
@@ -22,25 +24,22 @@ public class EnemyBehaviour : MonoBehaviour
 
     public bool isInCombat = false;
 
-    private EnemyHealth enemyHealth;
-    private EnemyAttack enemyAttack;
-
     private void Awake()
     {
         enemyStats = GetComponent<EnemyStats>();
-
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            playerPosition = player.transform;
-        }
+        enemyHealth = GetComponent<EnemyHealth>();
+        enemyAttack = GetComponent<EnemyAttack>();
 
         enemyNavMeshAgent = GetComponent<NavMeshAgent>();
         enemyNavMeshAgent.enabled = true;
         enemyNavMeshAgent.updateUpAxis = false;
 
-        enemyHealth = GetComponent<EnemyHealth>();
-        enemyAttack = GetComponent<EnemyAttack>();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            playerPosition = player.transform;
+            playerIntensity = player.GetComponent<PlayerIntensity>();
+        }
     }
 
     private void Start()
@@ -104,7 +103,7 @@ public class EnemyBehaviour : MonoBehaviour
             SetDestination(RandomPosition());
         }        
         
-        if (CalculateDistance() < viewDistance) // Checks if it "sees" the player
+        if (CalculateDistance() < enemyStats.ViewDistance) // Checks if it "sees" the player
         {
             if (enemyHealth.GetHealthPoints() <= 15.0f)
             {
@@ -113,6 +112,8 @@ public class EnemyBehaviour : MonoBehaviour
             else
             {
                 currentState = State.Chase; // Change state to Chase
+
+                playerIntensity.Increase(intensityIncrease);
             }
             
             Debug.Log("The current state is: " + currentState);
@@ -132,7 +133,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             currentState = State.Attack; // Change state to Attack
         }
-        else if (CalculateDistance() >= viewDistance) // Checks if the Player is out of view
+        else if (CalculateDistance() >= enemyStats.ViewDistance + 10) // Checks if the Player is out of view
         {
             wanderingTime = 0.5f; // Sets up this variable so the Enemy can take on a new destination to wander to shortly
             currentState = State.Idle; // Change state to Idle
@@ -155,8 +156,10 @@ public class EnemyBehaviour : MonoBehaviour
             enemyAttack.CancelInvoke();
             isInCombat = false;
             currentState = State.Chase; // Change state to Chase
+
+            playerIntensity.Increase(intensityIncrease); // Increase intensity when Player starts to run away
         }
-        else if (CalculateDistance() >= viewDistance) // Checks if the Player is still in view distance
+        else if (CalculateDistance() >= enemyStats.ViewDistance + 10.0f) // Checks if the Player is still in view distance
         {
             enemyAttack.CancelInvoke();
             isInCombat = false;
@@ -202,7 +205,7 @@ public class EnemyBehaviour : MonoBehaviour
             SetDestination(fleeDestination);
         }
         
-        if (CalculateDistance() >= viewDistance) // Checks if the player is in view
+        if (CalculateDistance() >= enemyStats.ViewDistance) // Checks if the player is in view
         {
             wanderingTime = 0.5f;
             currentState = State.Idle; // Change state to Idle

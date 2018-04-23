@@ -7,9 +7,14 @@ public class EnemyHealth : MonoBehaviour
 {
     private EnemyStats enemyStats;
 
+    private PlayerIntensity playerIntensity;
+    private int intensityIncrease = 3;
+
     private void Start()
     {
         enemyStats = GetComponent<EnemyStats>();
+
+        playerIntensity = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerIntensity>();
     }
 
     /// <summary>
@@ -34,6 +39,8 @@ public class EnemyHealth : MonoBehaviour
         if (enemyStats.EnemyHealthPoints <= 0) // Checks if the Enemy is still alive
         { 
             this.gameObject.SetActive(false); // If not then deactivate the enemy TODO: Change the parent (for object pooling)
+
+            playerIntensity.Increase(intensityIncrease);
         }
     }
 }

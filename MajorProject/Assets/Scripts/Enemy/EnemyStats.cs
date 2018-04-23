@@ -17,6 +17,7 @@ public class EnemyStats : MonoBehaviour
     // Movement
     public float WalkingSpeed { get; set; }
     public float RunningSpeed { get; set; }
+    public float ViewDistance { get; set; }
 
     private void Start()
     {
@@ -27,5 +28,6 @@ public class EnemyStats : MonoBehaviour
 
         WalkingSpeed = 2.0f;
         RunningSpeed = 10.0f;
+        ViewDistance = 10.0f;
     }
 }
