@@ -28,8 +28,6 @@ public class PlayerMovement : MonoBehaviour
 	
 	private void Update ()
     {
-        Debug.Log("Local position" + transform.InverseTransformDirection(GameObject.FindGameObjectWithTag("Enemy").transform.position));
-
         LimitPosition();
 
         KeyboardMovement();

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent (typeof(EnemyStats))]
 public class EnemyHealth : MonoBehaviour
 {
-    public float enemyHealthPoints;
+    private EnemyStats enemyStats;
 
     private void Start()
     {
-        enemyHealthPoints = 50;
+        enemyStats = GetComponent<EnemyStats>();
     }
 
     /// <summary>
@@ -17,7 +18,7 @@ public class EnemyHealth : MonoBehaviour
     /// <returns>float</returns>
     public float GetHealthPoints()
     {
-        return enemyHealthPoints;
+        return enemyStats.EnemyHealthPoints;
     }
 
     /// <summary>
@@ -27,10 +28,10 @@ public class EnemyHealth : MonoBehaviour
     /// <param name="modifier"></param>
     public void ChangeHealthPoints(float modifier)
     {
-        enemyHealthPoints += modifier;
-        Debug.Log("Enemy health: " + enemyHealthPoints);
+        enemyStats.EnemyHealthPoints += modifier;
+        Debug.Log("Enemy health: " + enemyStats.EnemyHealthPoints);
 
-        if (enemyHealthPoints <= 0) // Checks if the Enemy is still alive
+        if (enemyStats.EnemyHealthPoints <= 0) // Checks if the Enemy is still alive
         { 
             this.gameObject.SetActive(false); // If not then deactivate the enemy TODO: Change the parent (for object pooling)
         }

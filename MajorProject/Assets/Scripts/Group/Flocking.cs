@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(Rigidbody), typeof(EnemyAttack))]
+[RequireComponent(typeof(EnemyStats), typeof(Rigidbody), typeof(EnemyAttack))]
 public class Flocking : MonoBehaviour
 {
+    private EnemyStats enemyStats;
     private Rigidbody rigidBody;
 
     public GameObject leader;// { get; set; }
@@ -14,9 +15,8 @@ public class Flocking : MonoBehaviour
     
     public List<GameObject> neighbours; // Stores all nearby neighbours
     private float viewDistance = 10.0f;
-    //public float timeBetweenAreaChecks = 1.0f;
-
-    public float speed = 5.0f;
+    public float timeBetweenAreaChecks = 1.0f;
+    
     private List<Vector3> previousVectors;
 
     private EnemyHealth enemyHealth;
@@ -25,7 +25,8 @@ public class Flocking : MonoBehaviour
     private bool isInCombat = false;
 
     private void Awake()
-    {        
+    {
+        enemyStats = GetComponent<EnemyStats>();
         rigidBody = GetComponent<Rigidbody>();
         neighbours = new List<GameObject>();
         previousVectors = new List<Vector3>();
@@ -37,7 +38,7 @@ public class Flocking : MonoBehaviour
 
     private void Start ()
     {
-        InvokeRepeating("CheckAreaInView", 0.5f, 0.5f);
+        InvokeRepeating("CheckAreaInView", 0.5f, timeBetweenAreaChecks);
     }
 
     /// <summary>
@@ -64,7 +65,7 @@ public class Flocking : MonoBehaviour
         if (flocking != null)
         {
             //rigidBody.velocity = flocking; 
-            rigidBody.AddForce(CalculateFlocking() * speed);
+            rigidBody.AddForce(CalculateFlocking() * enemyStats.RunningSpeed);
         }
 
         //transform.position.Set(transform.position.x, 1.0f, transform.position.z);

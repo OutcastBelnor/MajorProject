@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent (typeof(EnemyStats))]
 [RequireComponent (typeof(NavMeshAgent), typeof(EnemyAttack), typeof(EnemyHealth))]
 public class EnemyBehaviour : MonoBehaviour
 {
+    private EnemyStats enemyStats;
+
     private Transform playerPosition;
 
     private NavMeshAgent enemyNavMeshAgent;
@@ -24,6 +27,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Awake()
     {
+        enemyStats = GetComponent<EnemyStats>();
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
@@ -90,7 +95,7 @@ public class EnemyBehaviour : MonoBehaviour
     /// </summary>
     private void IdleState()
     {
-        enemyNavMeshAgent.speed = 2.0f; // Set up the NavMeshAgent
+        enemyNavMeshAgent.speed = enemyStats.WalkingSpeed; // Set up the NavMeshAgent
         enemyNavMeshAgent.stoppingDistance = 0.0f; // Distance to stop from the destination
 
         if (Time.time - wanderingTime >= 5.0f) // Checks if it's the time to take a new destination to walk to
@@ -120,7 +125,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void ChaseState()
     {
         SetDestination(playerPosition.position);
-        enemyNavMeshAgent.speed = 10.0f;
+        enemyNavMeshAgent.speed = enemyStats.RunningSpeed;
         enemyNavMeshAgent.stoppingDistance = 2.5f; // Sets up NavMeshAgent
         
         if (CalculateDistance() <= 2.5f) // Checks if it is in range to attack the Player
@@ -139,9 +144,9 @@ public class EnemyBehaviour : MonoBehaviour
     /// </summary>
     private void AttackState()
     {
-        if (!isInCombat)
+        if (!isInCombat) // Checks if it is in combat
         { 
-            enemyAttack.StartAttacking();
+            enemyAttack.StartAttacking(); // If not yet, but Player is in range then start attacking
             isInCombat = true;
         }
         
@@ -171,7 +176,7 @@ public class EnemyBehaviour : MonoBehaviour
     /// </summary>
     private void FleeState()
     {
-        enemyNavMeshAgent.speed = 10.0f;
+        enemyNavMeshAgent.speed = enemyStats.RunningSpeed;
         enemyNavMeshAgent.stoppingDistance = 0.0f; // Sets up the NavMeshAgent
 
         if (enemyNavMeshAgent.remainingDistance <= 3.0f) // Checks if it is close to the destination
