@@ -5,15 +5,20 @@ using UnityEngine;
 public class PlayerIntensity : MonoBehaviour
 {
     private int intensity = 0;
-    private bool isInCombat;
+    public bool IsInCombat { get; set; }
 
     private int maxIntensity = 100;
 
+    private void Start()
+    {
+        IsInCombat = false;
+    }
+
     private void Update()
     {
-        if (!isInCombat)
+        if (!IsInCombat) // When not in combat
         {
-            InvokeRepeating("Decrease", 0.0f, 1.0f);
+            InvokeRepeating("Decrease", 0.0f, 1.0f); // Starts to decrease the intensity
         }
         else
         {

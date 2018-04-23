@@ -103,8 +103,10 @@ public class EnemyBehaviour : MonoBehaviour
             SetDestination(RandomPosition());
         }        
         
-        if (CalculateDistance() < enemyStats.ViewDistance) // Checks if it "sees" the player
+        if (CalculateDistance() < enemyStats.ViewDistance) // Checks if it "sees" the Player
         {
+            playerIntensity.IsInCombat = true; // Puts a in combat status on Player
+
             if (enemyHealth.GetHealthPoints() <= 15.0f)
             {
                 currentState = State.Flee; // Change state to Flee
@@ -137,6 +139,8 @@ public class EnemyBehaviour : MonoBehaviour
         {
             wanderingTime = 0.5f; // Sets up this variable so the Enemy can take on a new destination to wander to shortly
             currentState = State.Idle; // Change state to Idle
+        
+            playerIntensity.IsInCombat = false;
         }
     }
 
@@ -163,6 +167,8 @@ public class EnemyBehaviour : MonoBehaviour
         {
             enemyAttack.CancelInvoke();
             isInCombat = false;
+            playerIntensity.IsInCombat = false;
+
             wanderingTime = 0.5f; // Sets up this variable so the Enemy can take on a new destination to wander to shortly
             currentState = State.Idle; // Change state to Idle
         }
@@ -205,10 +211,12 @@ public class EnemyBehaviour : MonoBehaviour
             SetDestination(fleeDestination);
         }
         
-        if (CalculateDistance() >= enemyStats.ViewDistance) // Checks if the player is in view
+        if (CalculateDistance() >= enemyStats.ViewDistance + 10.0f) // Checks if the player is in view
         {
             wanderingTime = 0.5f;
             currentState = State.Idle; // Change state to Idle
+
+            playerIntensity.IsInCombat = false;
         }
     }
 

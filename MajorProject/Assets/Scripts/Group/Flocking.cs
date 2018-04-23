@@ -8,32 +8,34 @@ using UnityEngine.AI;
 public class Flocking : MonoBehaviour
 {
     private EnemyStats enemyStats;
+    private EnemyHealth enemyHealth;
+    private EnemyAttack enemyAttack;
     private Rigidbody rigidBody;
 
-    public GameObject leader;// { get; set; }
-    private Vector3 destination;
-    
+    public GameObject leader;
+    private List<Vector3> previousVectors;    
     public List<GameObject> neighbours; // Stores all nearby neighbours
     private float viewDistance = 10.0f;
     public float timeBetweenAreaChecks = 1.0f;
     
-    private List<Vector3> previousVectors;
 
-    private EnemyHealth enemyHealth;
-    private EnemyAttack enemyAttack;
     private Transform playerPosition;
     private bool isInCombat = false;
+    private PlayerIntensity playerIntensity;
+    private int intensityIncrease = 2;
 
     private void Awake()
     {
         enemyStats = GetComponent<EnemyStats>();
+        enemyHealth = GetComponent<EnemyHealth>();
+        enemyAttack = GetComponent<EnemyAttack>();
         rigidBody = GetComponent<Rigidbody>();
+
         neighbours = new List<GameObject>();
         previousVectors = new List<Vector3>();
 
-        enemyHealth = GetComponent<EnemyHealth>();
-        enemyAttack = GetComponent<EnemyAttack>();
         playerPosition = GameObject.FindGameObjectWithTag("Player").transform;
+        playerIntensity = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerIntensity>();
     }
 
     private void Start ()
@@ -47,6 +49,7 @@ public class Flocking : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
+        enemyAttack.CancelInvoke();
         CancelInvoke();
     }
 
@@ -86,6 +89,8 @@ public class Flocking : MonoBehaviour
 
         if (isInCombat)
         {
+
+
             if (enemyHealth.GetHealthPoints() < 15.0f)
             {
                 flockingVelocity += CalculateFleeing(playerPosition.position) * 0.25f;
@@ -293,10 +298,14 @@ public class Flocking : MonoBehaviour
         if (collidersInRange.Contains(playerPosition.gameObject.GetComponent<SphereCollider>() as Collider)) // Check if Player is in view distance
         {
             isInCombat = true;
+            playerIntensity.IsInCombat = true;
             
             if (Vector3.Distance(transform.position, playerPosition.position) <= 2.5f) // Check if Player is in attack range
             {
-                enemyAttack.StartAttacking(); // If yes then start attacking
+                if (!enemyAttack.IsInvoking())
+                { 
+                    enemyAttack.StartAttacking(); // If yes then start attacking
+                }
             }
             else
             {
@@ -306,6 +315,7 @@ public class Flocking : MonoBehaviour
         else
         {
             isInCombat = false; // If not then remove combat state
+            playerIntensity.IsInCombat = false;
         }
 
         if (neighbours.Count.Equals(0))
