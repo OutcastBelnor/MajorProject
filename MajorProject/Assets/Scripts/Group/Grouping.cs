@@ -44,7 +44,7 @@ public class Grouping : MonoBehaviour
 
             if (collider.CompareTag("Enemy") && !collider.gameObject.Equals(gameObject)) // Checks if it's an Enemy and not the current one
             {
-                if (collider.gameObject.transform.parent != null) // Checks if they have a group
+                if (!collider.transform.parent.name.Equals("AIDirector")) // Checks if they have a group
                 {
                     neighbour.transform.parent.GetComponent<GroupManager>().AddMember(gameObject); // If yes, then add this Enemy to their group
                     return;
@@ -61,6 +61,7 @@ public class Grouping : MonoBehaviour
             neighbours.Add(gameObject); // Adds itself to the list so that it is included in the list
 
             GameObject enemyGroup = Instantiate(enemyGroupPrefab, Vector3.zero, Quaternion.identity) as GameObject; // Create a new Group GameObject
+            enemyGroup.transform.parent = transform.parent; // Move to the AIDirector in hierarchy
             enemyGroup.GetComponent<GroupManager>().AcquireMembers(neighbours); // Add all of the possible Enemies to this group
         }
     }

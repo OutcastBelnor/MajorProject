@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 283168063}
   - component: {fileID: 283168062}
   m_Layer: 5
-  m_Name: EnemyCount
+  m_Name: EnemyCountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,8 +145,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 70.95, y: -31}
+  m_SizeDelta: {x: 141.9, y: 31}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &283168062
 MonoBehaviour:
@@ -439,7 +439,7 @@ GameObject:
   - component: {fileID: 781494121}
   m_Layer: 0
   m_Name: AIDirector
-  m_TagString: Untagged
+  m_TagString: AIDirector
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -460,7 +460,6 @@ MonoBehaviour:
   enemyPrefab: {fileID: 1859686968975922, guid: 86a47dba12aca6a43938f9f1ac730214,
     type: 2}
   player: {fileID: 736869659}
-  maxEnemies: 0
   activeAreaSize: 80
 --- !u!4 &781494122
 Transform:
@@ -547,8 +546,9 @@ GameObject:
   - component: {fileID: 1052184293}
   - component: {fileID: 1052184295}
   - component: {fileID: 1052184294}
+  - component: {fileID: 1052184296}
   m_Layer: 5
-  m_Name: AIDStats
+  m_Name: AIDStatsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -565,13 +565,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 283168061}
+  - {fileID: 1102012584}
   m_Father: {fileID: 714524971}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 553.5, y: 304.6}
-  m_SizeDelta: {x: 160, y: 28.7}
+  m_AnchoredPosition: {x: 491.6, y: 304.63}
+  m_SizeDelta: {x: 283.8, y: 28.75}
   m_Pivot: {x: 0.49999997, y: 0.5}
 --- !u!114 &1052184294
 MonoBehaviour:
@@ -605,13 +606,98 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'AI Director Stats:'
+  m_Text: AI Director Stats (Press F12 to turn on/off)
 --- !u!222 &1052184295
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1052184292}
+--- !u!114 &1052184296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1052184292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f4f708b76fc5aa40ac61cb581186ca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1102012583
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1102012584}
+  - component: {fileID: 1102012586}
+  - component: {fileID: 1102012585}
+  m_Layer: 5
+  m_Name: MaxEnemyText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1102012584
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1102012583}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1052184293}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -70.95, y: -30.5}
+  m_SizeDelta: {x: 141.9, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1102012585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1102012583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'Max Enemies: 0'
+--- !u!222 &1102012586
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1102012583}
 --- !u!1 &1125958682
 GameObject:
   m_ObjectHideFlags: 0

@@ -68,7 +68,11 @@ public class PlayerAttack : MonoBehaviour
                             enemyHealth.ChangeHealthPoints(-damage);
 
                             playerIntensity.Increase(intensityIncrease); // Increase intensity when hitting an Enemy
-                        }                            
+                        }
+                        else
+                        {
+                            Debug.Log("Player missed.");
+                        }
                     }
                 }
             }

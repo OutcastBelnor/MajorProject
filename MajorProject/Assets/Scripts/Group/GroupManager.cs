@@ -13,6 +13,11 @@ public class GroupManager : MonoBehaviour
     public List<GameObject> members;
     public GameObject leader;
 
+    private void OnEnable()
+    {
+        InvokeRepeating("CheckGroup", 0.5f, 1.0f);
+    }
+
     /// <summary>
     /// Called on disabling this script, will cancel checking the group
     /// and the leader.
@@ -48,6 +53,11 @@ public class GroupManager : MonoBehaviour
     public void AddMember(GameObject member)
     {
         members.Add(member);
+
+        if (!member.transform.parent.name.Equals("AIDirector")) // If this member is part of another group
+        {
+            member.transform.parent.GetComponent<GroupManager>().RemoveMember(member); // Remove it from this group
+        }
 
         member.transform.parent = gameObject.transform; // Adds it as a child of the group in the hierarchy
 
@@ -113,6 +123,24 @@ public class GroupManager : MonoBehaviour
 
         member.GetComponent<EnemyBehaviour>().enabled = true;
         member.GetComponent<Grouping>().enabled = true;
+
+        CheckLeader();
+    }
+
+    /// <summary>
+    /// Removes all the gameobjects from the parameter list,
+    /// if they are in the members list.
+    /// </summary>
+    /// <param name="enemies"></param>
+    public void RemoveMembers(List<GameObject> enemies)
+    {
+        foreach (GameObject enemy in enemies)
+        {
+            if (members.Contains(enemy))
+            {
+                members.Remove(enemy);
+            }
+        }
     }
 
     /// <summary>
@@ -126,7 +154,7 @@ public class GroupManager : MonoBehaviour
 
         if (members.Count.Equals(1)) // If there is only one member, then remove it from the group
         {
-            leader.transform.parent = null;
+            leader.transform.parent = GameObject.FindGameObjectWithTag("AIDirector").transform;
             RemoveMember(leader);
         }
 

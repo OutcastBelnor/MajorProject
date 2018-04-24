@@ -22,7 +22,7 @@ public class Flocking : MonoBehaviour
     private Transform playerPosition;
     private bool isInCombat = false;
     private PlayerIntensity playerIntensity;
-    private int intensityIncrease = 2;
+    //private int intensityIncrease = 2;
 
     private void Awake()
     {
@@ -287,7 +287,7 @@ public class Flocking : MonoBehaviour
             {
                 neighbours.Add(collider.gameObject);
 
-                if (collider.transform.parent != null && !transform.parent.Equals(collider.transform.parent)) // Check if the Enemy is part of a different group
+                if (!collider.transform.parent.name.Equals("AIDirector") && !transform.parent.Equals(collider.transform.parent)) // Check if the Enemy is part of a different group
                 {
                     collider.transform.parent.gameObject.GetComponent<GroupManager>().RemoveMember(collider.gameObject); // If yes then remove it from that group
                     transform.parent.GetComponent<GroupManager>().AddMember(collider.gameObject); // And add it to the group of this Enemy
@@ -321,7 +321,7 @@ public class Flocking : MonoBehaviour
         if (neighbours.Count.Equals(0))
         {
             transform.parent.GetComponent<GroupManager>().RemoveMember(gameObject);
-            transform.parent = null;
+            transform.parent = GameObject.FindGameObjectWithTag("AIDirector").transform;
 
             GetComponent<EnemyBehaviour>().enabled = true;
             GetComponent<Grouping>().enabled = true;
