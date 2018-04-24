@@ -65,7 +65,7 @@ public class Flocking : MonoBehaviour
     void Update ()
     {
         Vector3 flocking = CalculateFlocking();
-        if (flocking != null)
+        //if (flocking.x )
         {
             //rigidBody.velocity = flocking; 
             rigidBody.AddForce(CalculateFlocking() * enemyStats.RunningSpeed);
@@ -89,8 +89,6 @@ public class Flocking : MonoBehaviour
 
         if (isInCombat)
         {
-
-
             if (enemyHealth.GetHealthPoints() < 15.0f)
             {
                 flockingVelocity += CalculateFleeing(playerPosition.position) * 0.25f;
@@ -225,6 +223,11 @@ public class Flocking : MonoBehaviour
     {
         Vector3 alignment = Vector3.zero;
 
+        if (neighbours.Count == 0)
+        {
+            return alignment;
+        }
+
         foreach(GameObject neighbour in neighbours) // Checks each neighbour
         {
             alignment += neighbour.GetComponent<Rigidbody>().velocity; // Adds the velocity of the neighbour to the alignment
@@ -232,7 +235,7 @@ public class Flocking : MonoBehaviour
 
         alignment /= neighbours.Count; // Averages the sum of velocities
         alignment -= rigidBody.velocity; // Substracts own velocity from the average
-        
+
         return alignment;
     }
 
