@@ -38,7 +38,12 @@ public class EnemyHealth : MonoBehaviour
 
         if (enemyStats.EnemyHealthPoints <= 0) // Checks if the Enemy is still alive
         { 
-            this.gameObject.SetActive(false); // If not then deactivate the enemy TODO: Change the parent (for object pooling)
+            gameObject.SetActive(false); // If not then deactivate the enemy
+            if (!transform.parent.name.Equals("AIDirector")) // Checks if it is a child of AI Director
+            { 
+                transform.parent = transform.parent.parent; // If not then change parent to the AI Director
+                transform.parent.gameObject.GetComponent<AIDirector>().ActiveEnemies--;
+            }
 
             playerIntensity.Increase(intensityIncrease);
         }

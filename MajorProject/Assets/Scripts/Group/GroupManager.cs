@@ -92,6 +92,10 @@ public class GroupManager : MonoBehaviour
     private void AppointLeader()
     {
         int randomIndex = UnityEngine.Random.Range(0, members.Count); // Randomly assign the leader role to a member
+        if (randomIndex >= members.Count)
+        {
+            return;
+        }
         leader = members[randomIndex];
 
         leader.GetComponent<Flocking>().enabled = false; // Leader needs to be steered by the EnemyBehaviour script
@@ -150,8 +154,6 @@ public class GroupManager : MonoBehaviour
     /// </summary>
     private void CheckGroup()
     {
-        CheckLeader();
-
         if (members.Count.Equals(1)) // If there is only one member, then remove it from the group
         {
             leader.transform.parent = GameObject.FindGameObjectWithTag("AIDirector").transform;
@@ -160,6 +162,7 @@ public class GroupManager : MonoBehaviour
 
         if (members.Count.Equals(0)) // If there are no members then destroy the group
         {
+            Debug.Log("Empty group");
             Destroy(gameObject);
         }
     }

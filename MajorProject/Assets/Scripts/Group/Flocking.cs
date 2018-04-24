@@ -64,15 +64,7 @@ public class Flocking : MonoBehaviour
 
     void Update ()
     {
-        Vector3 flocking = CalculateFlocking();
-        //if (flocking.x )
-        {
-            //rigidBody.velocity = flocking; 
-            rigidBody.AddForce(CalculateFlocking() * enemyStats.RunningSpeed);
-        }
-
-        //transform.position.Set(transform.position.x, 1.0f, transform.position.z);
-        //transform.rotation = Quaternion.Euler(45.0f, 0.0f, 0.0f);
+        rigidBody.AddForce(CalculateFlocking() * enemyStats.RunningSpeed);
     }
 
     /// <summary>

@@ -30,25 +30,30 @@ public class AIDirector : MonoBehaviour
         despawned = new List<GameObject>();
 
         InvokeRepeating("Spawning", 0.5f, 1.0f);
-        InvokeRepeating("CheckEnemies", 0.5f, 1.0f);
+        InvokeRepeating("CheckActiveEnemies", 0.5f, 1.0f);
     }
 
+    /// <summary>
+    /// This method handles spawning of the enemies.
+    /// </summary>
     private void Spawning()
     {
-        if (spawned.Count >= MaxEnemies)
+        if (ActiveEnemies >= MaxEnemies) // Checks if there are maximum enemies spawned
         {
+            Debug.Log("Max enemies reached");
             return;
         }
 
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        //if (horizontal == 0 && vertical == 0) // Checks if the Player doesn't move
+        if (horizontal == 0 && vertical == 0) // Checks if the Player doesn't move
         {
             Vector3 spawnPoint = Vector3.zero;
             do
             {
-                spawnPoint = UnityEngine.Random.insideUnitSphere + player.transform.position;
+                Vector2 randomPoint = UnityEngine.Random.insideUnitCircle;
+                spawnPoint = new Vector3(randomPoint.x, 0.0f, randomPoint.y) + player.transform.position;
                 spawnPoint *= activeAreaSize; // Creates a random point inside the ActiveAreaSet
             }
             while (Vector3.Distance(player.transform.position, spawnPoint) <= visibleAreaSize); // Repeat until the spawnPoint is out of Player's view
@@ -78,7 +83,7 @@ public class AIDirector : MonoBehaviour
     /// This method checks if the spawned enemies are inside of the ActiveAreaSet.
     /// If not then the enemies are despawned.
     /// </summary>
-    private void CheckEnemies()
+    private void CheckActiveEnemies()
     {
         foreach (GameObject enemy in spawned.ToArray())
         {

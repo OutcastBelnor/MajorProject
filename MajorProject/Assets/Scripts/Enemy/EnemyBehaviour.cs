@@ -131,7 +131,7 @@ public class EnemyBehaviour : MonoBehaviour
         enemyNavMeshAgent.speed = enemyStats.RunningSpeed;
         enemyNavMeshAgent.stoppingDistance = 2.5f; // Sets up NavMeshAgent
         
-        if (CalculateDistance() <= 2.5f) // Checks if it is in range to attack the Player
+        if (CalculateDistance() <= 3.0f) // Checks if it is in range to attack the Player
         {
             currentState = State.Attack; // Change state to Attack
         }
@@ -155,7 +155,7 @@ public class EnemyBehaviour : MonoBehaviour
             isInCombat = true;
         }
         
-        if (CalculateDistance() > 2.5f) // Checks if it still is in range
+        if (CalculateDistance() > 3.0f) // Checks if it still is in range
         {
             enemyAttack.CancelInvoke();
             isInCombat = false;
