@@ -50,13 +50,15 @@ public class AIDirector : MonoBehaviour
         if (horizontal == 0 && vertical == 0) // Checks if the Player doesn't move
         {
             Vector3 spawnPoint = Vector3.zero;
+            float distance = 0;
             do
             {
-                Vector2 randomPoint = UnityEngine.Random.insideUnitCircle;
-                spawnPoint = new Vector3(randomPoint.x, 0.0f, randomPoint.y) + player.transform.position;
-                spawnPoint *= activeAreaSize; // Creates a random point inside the ActiveAreaSet
+                Vector2 randomPoint = UnityEngine.Random.insideUnitCircle * activeAreaSize;
+                spawnPoint = new Vector3(randomPoint.x, 0.0f, randomPoint.y) + player.transform.position; // Creates a random point inside the ActiveAreaSet
+
+                distance = Vector3.Distance(player.transform.position, spawnPoint);
             }
-            while (Vector3.Distance(player.transform.position, spawnPoint) <= visibleAreaSize); // Repeat until the spawnPoint is out of Player's view
+            while (distance <= visibleAreaSize); // Repeat until the spawnPoint is out of Player's view
             spawnPoint.y = 1.0f;
 
             GameObject newEnemy;
