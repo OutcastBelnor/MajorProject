@@ -49,10 +49,8 @@ public class PlayerAttack : MonoBehaviour
                 return; // Returns if the enemy is null
             }
 
-            if (enemy.CompareTag("Enemy") && Vector3.Distance(enemy.transform.position, transform.position) <= range)
+            if (enemy.CompareTag("Enemy") && Vector3.Distance(enemy.transform.position, transform.position) <= range) // Checks if the target is an Enemy and is in range
             {
-                Debug.Log("Enemy in range");
-
                 EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
 
                 int missValue = Random.Range(0, 8);
