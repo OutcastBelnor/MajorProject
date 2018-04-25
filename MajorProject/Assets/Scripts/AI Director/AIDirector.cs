@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class AIDirector : MonoBehaviour
 {
@@ -47,9 +48,9 @@ public class AIDirector : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
+        Vector3 spawnPoint = Vector3.zero;
         if (horizontal == 0 && vertical == 0) // Checks if the Player doesn't move
         {
-            Vector3 spawnPoint = Vector3.zero;
             float distance = 0;
             do
             {
@@ -61,24 +62,36 @@ public class AIDirector : MonoBehaviour
             while (distance <= visibleAreaSize); // Repeat until the spawnPoint is out of Player's view
             spawnPoint.y = 1.0f;
 
-            GameObject newEnemy;
-            if (despawned.Count != 0) // Checks if there are any available objects
-            {
-                newEnemy = despawned[0]; // Takes the first enemy from the despawned enemies
-                newEnemy.SetActive(true); // Activates it
-                newEnemy.transform.position = spawnPoint; // Sets the position to the spawnPoint
-                despawned.Remove(newEnemy); // Removes it from the despawned enemies
-            }
-            else // If not, then create a new one
-            {
-                newEnemy = Instantiate(enemyPrefab, spawnPoint, enemyPrefab.transform.rotation) as GameObject; // Spawn the Enemy on the spawnPoint
-            }
-
-            newEnemy.transform.parent = this.transform; // Change its position in the hierarchy
-
-            spawned.Add(newEnemy); // Add to the spawned Enemies
-            ActiveEnemies++;
+            
         }
+        else
+        {
+
+        }
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(spawnPoint, out hit, 3.0f, NavMesh.AllAreas))
+        {
+            spawnPoint = hit.position; // Change the position to the valid position on Navmesh
+        }
+
+        GameObject newEnemy;
+        if (despawned.Count != 0) // Checks if there are any available objects
+        {
+            newEnemy = despawned[0]; // Takes the first enemy from the despawned enemies
+            newEnemy.SetActive(true); // Activates it
+            newEnemy.transform.position = spawnPoint; // Sets the position to the spawnPoint
+            despawned.Remove(newEnemy); // Removes it from the despawned enemies
+        }
+        else // If not, then create a new one
+        {
+            newEnemy = Instantiate(enemyPrefab, spawnPoint, enemyPrefab.transform.rotation) as GameObject; // Spawn the Enemy on the spawnPoint
+        }
+
+        newEnemy.transform.parent = this.transform; // Change its position in the hierarchy
+
+        spawned.Add(newEnemy); // Add to the spawned Enemies
+        ActiveEnemies++;
     }
 
     /// <summary>

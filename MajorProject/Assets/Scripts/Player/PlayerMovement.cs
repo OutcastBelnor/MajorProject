@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
         LimitPosition();
 
         KeyboardMovement();
-        MouseMovement();
+        //MouseMovement();
     }
 
     /// <summary> Movement done with arrows or WSAD keys </summary>
