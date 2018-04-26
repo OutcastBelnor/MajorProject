@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal"); // Get the input from the keyboard
         float vertical = Input.GetAxisRaw("Vertical");
 
-        if (horizontal != 0 || vertical != 0) // Checks if the current position is not the destination
+        if (horizontal != 0 || vertical != 0) // Checks if the current position is not the destination 
         {
             Transform parent = gameObject.GetComponentInChildren<SpriteRenderer>().transform.parent;
             FlipSprite(horizontal, parent);

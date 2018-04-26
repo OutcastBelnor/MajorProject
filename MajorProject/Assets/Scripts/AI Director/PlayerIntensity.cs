@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerIntensity : MonoBehaviour
 {
-    private int intensity = 0;
+    public int Intensity { get; set; }
     public bool IsInCombat { get; set; }
 
     private int maxIntensity = 100;
@@ -12,42 +12,32 @@ public class PlayerIntensity : MonoBehaviour
     private void Start()
     {
         IsInCombat = false;
-    }
 
-    private void Update()
-    {
-        if (!IsInCombat) // When not in combat
-        {
-            InvokeRepeating("Decrease", 0.0f, 1.0f); // Starts to decrease the intensity
-        }
-        else
-        {
-            CancelInvoke();
-        }
+        InvokeRepeating("Decrease", 1.0f, 1.0f); // Invokes repeating on decreasing the intensity while out of combat
     }
 
     /// <summary>
-    /// Decreases the intensity, when not in combat.
+    /// Decreases the Intensity, when not in combat.
     /// </summary>
     private void Decrease()
     {
-        if (intensity > 0)
+        if (!IsInCombat && Intensity > 0) // Checks if the Player is out of combat and the intensity isn't 0
         {
-            intensity--;
+            Intensity--;
         }
     }
 
     /// <summary>
-    /// Increases the intensity.
+    /// Increases the Intensity.
     /// </summary>
     /// <param name="amount"></param>
     public void Increase(int amount)
     {
-        intensity += amount;
+        Intensity += amount;
 
-        if (intensity >= maxIntensity) // Checks if it doesn't go over the max
+        if (Intensity >= maxIntensity) // Checks if it doesn't go over the max
         {
-            intensity = maxIntensity;
+            Intensity = maxIntensity;
         }
     }
 }

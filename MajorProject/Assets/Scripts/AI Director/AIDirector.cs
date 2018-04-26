@@ -49,8 +49,8 @@ public class AIDirector : MonoBehaviour
         float vertical = Input.GetAxisRaw("Vertical");
 
         Vector3 spawnPoint = Vector3.zero;
-        if (horizontal == 0 && vertical == 0) // Checks if the Player doesn't move
-        {
+        //if (horizontal == 0 && vertical == 0) // Checks if the Player doesn't move
+        //{
             float distance = 0;
             do
             {
@@ -60,14 +60,27 @@ public class AIDirector : MonoBehaviour
                 distance = Vector3.Distance(player.transform.position, spawnPoint);
             }
             while (distance <= visibleAreaSize); // Repeat until the spawnPoint is out of Player's view
-            spawnPoint.y = 1.0f;
-
-            
-        }
+            spawnPoint.y = 1.0f;            
+        /*}
         else
         {
+            if (horizontal == 1 && vertical == 1)
+            {
 
-        }
+            }
+            else if (horizontal == -1 && vertical == -1)
+            {
+
+            }
+            else if (horizontal == 1 && vertical == 1)
+            {
+
+            }
+            else if (horizontal == 1 && vertical == 1)
+            {
+
+            }
+        }*/
 
         NavMeshHit hit;
         if (NavMesh.SamplePosition(spawnPoint, out hit, 3.0f, NavMesh.AllAreas))

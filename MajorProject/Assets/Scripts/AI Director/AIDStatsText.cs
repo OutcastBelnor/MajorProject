@@ -32,8 +32,6 @@ public class AIDStatsText : MonoBehaviour
                 continue;
             }
 
-            text.enabled = isTurnedOn;
-
             if (text.name.Equals("EnemyCountText"))
             {
                 text.text = "Enemy Count: " + aIDirector.ActiveEnemies; // Update EnemyCountText
@@ -42,6 +40,18 @@ public class AIDStatsText : MonoBehaviour
             {
                 text.text = "Max Enemies: " + aIDirector.MaxEnemies; // Update MaxEnemyText
             }
+            else if (text.name.Equals("IntensityText"))
+            {
+                PlayerIntensity playerIntensity = aIDirector.player.GetComponent<PlayerIntensity>();
+
+                Slider intensityBar = text.transform.GetChild(0).gameObject.GetComponent<Slider>();
+                intensityBar.value = playerIntensity.Intensity; // Update Intensity bar
+
+                Toggle inCombatCheckbox = text.transform.GetChild(1).gameObject.GetComponent<Toggle>();
+                inCombatCheckbox.isOn = playerIntensity.IsInCombat; // Update IsInCombat toggle
+            }
+
+            text.gameObject.SetActive(isTurnedOn);
         }
 	}
 }
