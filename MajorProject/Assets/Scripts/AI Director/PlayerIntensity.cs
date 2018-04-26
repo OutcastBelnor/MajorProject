@@ -7,11 +7,13 @@ public class PlayerIntensity : MonoBehaviour
     public int Intensity { get; set; }
     public bool IsInCombat { get; set; }
 
-    private int maxIntensity = 100;
+    public int MaxIntensity { get; set; }
 
     private void Start()
     {
         IsInCombat = false;
+
+        MaxIntensity = 50;
 
         InvokeRepeating("Decrease", 1.0f, 1.0f); // Invokes repeating on decreasing the intensity while out of combat
     }
@@ -35,9 +37,9 @@ public class PlayerIntensity : MonoBehaviour
     {
         Intensity += amount;
 
-        if (Intensity >= maxIntensity) // Checks if it doesn't go over the max
+        if (Intensity >= MaxIntensity) // Checks if it doesn't go over the max
         {
-            Intensity = maxIntensity;
+            Intensity = MaxIntensity;
         }
     }
 }

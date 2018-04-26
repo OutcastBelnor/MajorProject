@@ -105,8 +105,6 @@ public class EnemyBehaviour : MonoBehaviour
         
         if (CalculateDistance() < enemyStats.ViewDistance) // Checks if it "sees" the Player
         {
-            playerIntensity.IsInCombat = true; // Puts a in combat status on Player
-
             if (enemyHealth.GetHealthPoints() <= 15.0f)
             {
                 currentState = State.Flee; // Change state to Flee
@@ -127,6 +125,8 @@ public class EnemyBehaviour : MonoBehaviour
     /// </summary>
     private void ChaseState()
     {
+        playerIntensity.IsInCombat = true; // Puts a in combat status on Players
+
         SetDestination(playerPosition.position);
         enemyNavMeshAgent.speed = enemyStats.RunningSpeed;
         enemyNavMeshAgent.stoppingDistance = 2.5f; // Sets up NavMeshAgent
@@ -149,6 +149,8 @@ public class EnemyBehaviour : MonoBehaviour
     /// </summary>
     private void AttackState()
     {
+        playerIntensity.IsInCombat = true; // Puts a in combat status on Player
+
         if (!isInCombat) // Checks if it is in combat
         { 
             enemyAttack.StartAttacking(); // If not yet, but Player is in range then start attacking
@@ -226,14 +228,26 @@ public class EnemyBehaviour : MonoBehaviour
     /// <param name="destination"></param>
     private void SetDestination(Vector3 destination)
     {
-        SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
-        if (transform.position.x - destination.x < 0) // Checks which way the Enemy is heading
+        float direction = transform.position.x - destination.x;
+
+        Transform sprite = transform.GetChild(1);
+        Vector3 scale = sprite.localScale;
+
+        if (direction > 0)
         {
-            sprite.flipX = false; // And flips the sprite if necessary
+            if (scale.x < 0)
+            {
+                scale.x *= -1.0f;
+                sprite.transform.localScale = scale;
+            }
         }
-        else if (transform.position.x - destination.x > 0)
+        else if (direction < 0)
         {
-            sprite.flipX = true;
+            if (scale.x > 0)
+            {
+                scale.x *= -1.0f;
+                sprite.transform.localScale = scale;
+            }
         }
 
         enemyNavMeshAgent.SetDestination(destination);

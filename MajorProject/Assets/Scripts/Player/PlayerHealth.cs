@@ -9,24 +9,31 @@ public class PlayerHealth : MonoBehaviour
 
     private float healthPoints;
 
-	// Use this for initialization
 	private void Start ()
     {
-        slider = GameObject.FindGameObjectWithTag("HealthBar").GetComponent<Slider>();
+        slider = GameObject.FindGameObjectWithTag("HealthBar").GetComponent<Slider>(); // Gets the HealthBar from the UI
 
         healthPoints = 100;
-        slider.value = healthPoints;
+        slider.value = healthPoints; // Initially set the value on HealthBar
 	}
 
+    /// <summary>
+    /// Returns healthPoints
+    /// </summary>
+    /// <returns>float</returns>
     public float GetHealthPoints()
     {
         return healthPoints;
     }
 
+    /// <summary>
+    /// Changes the healthPoints with the parameter and updates value on HealthBar.
+    /// </summary>
+    /// <param name="modifier"></param>
     public void ChangeHealthPoints(float modifier)
     {
         healthPoints += modifier;
-        slider.value = healthPoints;
+        slider.value = healthPoints; // Updates value;
 
         if (healthPoints <= 0)
         {

@@ -32,7 +32,11 @@ public class AIDStatsText : MonoBehaviour
                 continue;
             }
 
-            if (text.name.Equals("EnemyCountText"))
+            if (text.name.Equals("AIDStateText"))
+            {
+                text.text = "AI Director state: " + aIDirector.CurrentState;
+            }
+            else if (text.name.Equals("EnemyCountText"))
             {
                 text.text = "Enemy Count: " + aIDirector.ActiveEnemies; // Update EnemyCountText
             }
@@ -45,6 +49,7 @@ public class AIDStatsText : MonoBehaviour
                 PlayerIntensity playerIntensity = aIDirector.player.GetComponent<PlayerIntensity>();
 
                 Slider intensityBar = text.transform.GetChild(0).gameObject.GetComponent<Slider>();
+                intensityBar.maxValue = playerIntensity.MaxIntensity; // Set max intensity
                 intensityBar.value = playerIntensity.Intensity; // Update Intensity bar
 
                 Toggle inCombatCheckbox = text.transform.GetChild(1).gameObject.GetComponent<Toggle>();

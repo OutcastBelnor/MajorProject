@@ -10,34 +10,138 @@ public class AIDirector : MonoBehaviour
     public GameObject enemyPrefab;
 
     public GameObject player;
+    private PlayerIntensity playerIntensity;
+
+    public enum State { BuildUp, Sustain, Fade, Relax }; // States for the AI Director
+    public State CurrentState { get; set; }
 
     private List<GameObject> spawned; // These will be holding current enemies and despawned enemies
     private List<GameObject> despawned; // For object pooling
     public int MaxEnemies { get; set; } // Maximum number of enemies in the scene
     public int ActiveEnemies { get; set; }
+    private int minPopulation = 20;
+    private int maxPopulation = 40;
 
     private float visibleAreaSize = 20.0f; // Area visible by the player
     public float activeAreaSize = 70.0f; // Area surrounding the player where the spawning takes places
+
+    private float spawnRate = 0.25f;
+    private float despawnRate = 1.0f;
+
+    private float timePassed; // This variable will be used to keep track of time
+    private float sustainTime; // This will hold the length of Sustain time
+    private float relaxTime; // This will hold the length of Relax time
+
+    private float intensityFade; // This will hold a randomized value in Fade state for intensity to reach
 
     private void Start()
     {
         //Instantiate(playerPrefab, transform.position, Quaternion.identity); DEBUG: Player will be placed in the scene manually for now
         //player = GameObject.FindGameObjectWithTag("Player"); // DEBUG: since the camera is attached to it
+        playerIntensity = player.GetComponent<PlayerIntensity>(); // Gets the PlayerIntensity
 
-        MaxEnemies = UnityEngine.Random.Range(20, 40);
+        CurrentState = State.BuildUp; // Sets the state to the default
+
         ActiveEnemies = 0;
-
         spawned = new List<GameObject>();
         despawned = new List<GameObject>();
 
-        InvokeRepeating("Spawning", 0.5f, 1.0f);
+        //InvokeRepeating("Spawning", 0.5f, 1.0f);
         InvokeRepeating("CheckActiveEnemies", 0.5f, 1.0f);
+    }
+
+    private void Update()
+    {
+        switch (CurrentState) // Responsible for calling out the State methods
+        {
+            case State.BuildUp:
+                BuildUpState();
+                break;
+
+            case State.Sustain:
+                SustainState();
+                break;
+
+            case State.Fade:
+                FadeState();
+                break;
+
+            case State.Relax:
+                RelaxState();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Populates the ActiveAreaSet until either the maximum population or maximum intensity has been reached
+    /// </summary>
+    private void BuildUpState()
+    {
+        if (playerIntensity.Intensity < playerIntensity.MaxIntensity)
+        {
+            if (!IsInvoking("Spawn"))
+            { 
+                MaxEnemies = UnityEngine.Random.Range(minPopulation, maxPopulation); // Randomize max population every cycle
+
+                InvokeRepeating("Spawn", 0.1f, spawnRate); // If the maximum intensity haven't been reached then spawn more enemies
+            }
+        }
+        else
+        {
+            CurrentState = State.Sustain; // When maximum Intensity is reached change state to Sustain
+
+            sustainTime = UnityEngine.Random.Range(10, 15); // Randomize the sustain time for this cycle
+            timePassed = Time.time; // Get the current time
+        }
+    }
+
+    /// <summary>
+    /// This state maintains maximum population for sustainTime seconds,
+    /// and then switches the CurrentState to Fade.
+    /// </summary>
+    private void SustainState()
+    {
+        if (Time.time - timePassed >= sustainTime) // If time is reached
+        {
+            CancelInvoke("Spawn"); // Stop spawning
+            CurrentState = State.Fade; // Change state to fade
+
+            intensityFade = UnityEngine.Random.Range(20, 50); // Randomize target value that intensity 
+        }                                                     // needs to drop to until next state change
+    }
+
+    /// <summary>
+    /// This state starts to despawn until the intensity has decreased below intensityFade. 
+    /// </summary>
+    private void FadeState()
+    {
+        if (!IsInvoking("Despawn"))
+        {
+            InvokeRepeating("Despawn", 0.1f, despawnRate); // Start despawning enemies until minimum population is reached
+        }
+
+        if (playerIntensity.Intensity <= intensityFade) // If intensity has dropped enough
+        {
+            CurrentState = State.Relax; // Change state to Relax
+
+            relaxTime = UnityEngine.Random.Range(20, 30); // Pick a random time for Relax length
+            timePassed = Time.time; // Get the current time
+        }
+    }
+
+    private void RelaxState()
+    {
+        if (Time.time - timePassed >= relaxTime) // Checks if relaxTime has passed
+        {
+            CancelInvoke("Despawn"); // Stop despawning
+            CurrentState = State.BuildUp; // Change state to BuildUp
+        }
     }
 
     /// <summary>
     /// This method handles spawning of the enemies.
     /// </summary>
-    private void Spawning()
+    private void Spawn()
     {
         if (ActiveEnemies >= MaxEnemies) // Checks if there are maximum enemies spawned
         {
@@ -105,6 +209,25 @@ public class AIDirector : MonoBehaviour
 
         spawned.Add(newEnemy); // Add to the spawned Enemies
         ActiveEnemies++;
+    }
+
+    private void Despawn()
+    {
+        if (ActiveEnemies > minPopulation)
+        {
+            GameObject enemy;
+            do
+            {
+                int randomIndex = UnityEngine.Random.Range(0, ActiveEnemies); // Choose random enemy from the spawned list to despawn
+                enemy = spawned[randomIndex];
+            }
+            while (Vector3.Distance(player.transform.position, enemy.transform.position) > visibleAreaSize); // Repeat until enemy is out sight of the Player
+            
+            spawned.Remove(enemy); // Remove it from the spawned list
+            ActiveEnemies--; // Update ActiveEnemies count
+
+            despawned.Add(enemy); // Add it to the despawned list for reuse
+        }
     }
 
     /// <summary>

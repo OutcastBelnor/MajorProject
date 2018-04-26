@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent (typeof(PlayerIntensity))]
 public class PlayerAttack : MonoBehaviour
 {
-    private float range = 2.5f;
+    private float range = 3.0f;
     public float timeBetweenAttacks = 1.0f;
     private float timeSinceLastAttack;
     private float baseDamage = 10.0f;
